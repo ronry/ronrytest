@@ -1,5 +1,0 @@
-package com.ronrytest.protobuf.lib;
-
-message LongEntity{
-	optional int64 value = 1;
-}

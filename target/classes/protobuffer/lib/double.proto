@@ -1,5 +1,0 @@
-package com.ronrytest.protobuf.lib;
-
-message DoubleEntity{
-	optional double value = 1;
-}

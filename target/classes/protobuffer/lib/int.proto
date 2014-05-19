@@ -1,5 +1,0 @@
-package com.ronrytest.protobuf.lib;
-
-message IntegerEntity{
-	optional int32 value = 1;
-}

@@ -1,5 +1,0 @@
-package com.ronrytest.protobuf.lib;
-
-message StringEntity{
-	optional string value = 1;
-}

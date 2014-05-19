@@ -1,5 +1,0 @@
-package com.ronrytest.protobuf.lib;
-
-message ListEntity{
-	repeated bytes value = 1;
-}

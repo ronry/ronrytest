@@ -1,6 +1,0 @@
-package com.ronrytest.protobuf.lib;
-
-message MapEntity{
-	required bytes key = 1;
-	required bytes value = 2;
-}
