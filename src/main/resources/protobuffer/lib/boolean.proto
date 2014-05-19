@@ -1,0 +1,5 @@
+package com.ronrytest.protobuf.lib;
+
+message BooleanEntity{
+	optional bool value = 1;
+}

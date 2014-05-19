@@ -1,0 +1,22 @@
+package com.ronrytest.protobuf.lib;
+option java_outer_classname = "BeanProtos";
+
+import "lib/boolean.proto";
+import "lib/date.proto";
+import "lib/double.proto";
+import "lib/float.proto";
+import "lib/int.proto";
+import "lib/long.proto";
+import "lib/map.proto";
+import "lib/string.proto";
+
+message Bean{
+    optional StringEntity email = 1;
+    optional StringEntity mobile = 2;
+    optional StringEntity hashedPassword = 3;
+    optional DateEntity lastLoginTime = 4;
+    repeated StringEntity zhiwu = 5;
+    repeated IntegerEntity gonghao = 6;
+    repeated MapEntity shouru = 7;
+}
+

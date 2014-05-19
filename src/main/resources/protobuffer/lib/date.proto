@@ -1,0 +1,5 @@
+package com.ronrytest.protobuf.lib;
+
+message DateEntity{
+	required int64 time = 1;
+}

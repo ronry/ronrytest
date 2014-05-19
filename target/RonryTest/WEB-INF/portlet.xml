@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<portlet-app xmlns='http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd' version='2.0'>
+	<portlet>
+		<description>RonryPortlet</description>
+		<portlet-name>RonryPortlet</portlet-name>
+		<display-name>RonryPortlet</display-name>
+		<portlet-class>com.ronry.portlettest.portlets.RonryPortlet</portlet-class>
+		<expiration-cache>0</expiration-cache>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>VIEW</portlet-mode>
+			<portlet-mode>EDIT</portlet-mode>
+			<portlet-mode>HELP</portlet-mode>
+		</supports>
+		<portlet-info>
+			<title>RonryPortlet</title>
+			<short-title>RonryPortlet</short-title>
+		</portlet-info>
+	</portlet>
+</portlet-app>
