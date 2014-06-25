@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.citrus.util.StringUtil;
-
 /**
  * <pre>
  * protoc -I=/home/ronry/projects/opensource/ronrytest/src/main/resources/protobuffer/ --java_out=/home/ronry/projects/opensource/ronrytest/src/main/java /home/ronry/projects/opensource/ronrytest/src/main/resources/protobuffer/
@@ -58,7 +56,7 @@ public class ProtoFileGenerator {
 
         String classSimpleName = clazz.getSimpleName();
 
-        String filePath = rootPath + StringUtil.toLowerCaseWithUnderscores(classSimpleName) + ".proto";
+        String filePath = rootPath + classSimpleName + ".proto";
 
         ProtoFileWriter writer = new ProtoFileWriter(new FileWriter(filePath));
 

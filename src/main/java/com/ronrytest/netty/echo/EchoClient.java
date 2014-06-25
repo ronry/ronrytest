@@ -21,16 +21,18 @@ public class EchoClient {
 
 	private Channel channel;
 
+    private EventLoopGroup group;
+
 	public EchoClient(int port) {
 		this.port = port;
 	}
 
 	public void start() throws Exception {
-		EventLoopGroup group = new NioEventLoopGroup();
+        group = new NioEventLoopGroup();
 
 		Bootstrap bootstrap = new Bootstrap();
 
-		bootstrap.remoteAddress("127.0.0.1", port).group(group)
+        bootstrap.remoteAddress("127.0.0.1", port).group(group)
 				.channel(NioSocketChannel.class)
 				.handler(new ChannelInitializer<SocketChannel>() {
 
@@ -52,6 +54,12 @@ public class EchoClient {
 		channel.write(msg);
 	}
 
+    public void stop() throws Exception {
+        ChannelFuture closeFuture = channel.close();
+        closeFuture.sync();
+        group.shutdownGracefully();
+    }
+
 	static class EchoClientWriteHandler extends ChannelOutboundHandlerAdapter {
 
 		private UnpooledByteBufAllocator buffAllpcator = new UnpooledByteBufAllocator(
@@ -69,6 +77,8 @@ public class EchoClient {
 				buf.writeBytes(((String) msg).getBytes("UTF-8"));
 
 				ctx.writeAndFlush(buf);
+            } else {
+                System.out.println("begin to send " + msg);
 			}
 		}
 
@@ -83,6 +93,28 @@ public class EchoClient {
 			System.out.println(msg);
 		}
 
+        @Override
+        public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+            System.out.println(System.currentTimeMillis() + "channelUnregistered");
+            ctx.fireChannelUnregistered();
+        }
+
+        @Override
+        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+            System.out.println(System.currentTimeMillis() + " channelInactive");
+            ctx.fireChannelInactive();
+
+            Thread.sleep(3000);
+
+            System.exit(0);
+        }
+
+        @Override
+        public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+            System.out.println(System.currentTimeMillis() + "channelReadComplete");
+            ctx.fireChannelReadComplete();
+        }
+
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -92,5 +124,8 @@ public class EchoClient {
 		System.out.println("client started");
 
 		client.send("hello");
+
+        Thread.sleep(5000);
+
 	}
 }

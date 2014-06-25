@@ -20,7 +20,6 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.PropertyValue;
 import org.springframework.core.CollectionFactory;
 
-import com.alibaba.citrus.util.StringUtil;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 import com.google.protobuf.Message.Builder;
@@ -190,8 +189,7 @@ public class ProtoBeanCovertor {
                     Field ff = pv.getClass().getDeclaredField("resolvedDescriptor");
                     ff.setAccessible(true);
 
-                    Method writeMethod = builder.getClass().getDeclaredMethod("addAll"
-                                                                                      + StringUtil.toPascalCase(propertyName),
+                    Method writeMethod = builder.getClass().getDeclaredMethod("addAll" + propertyName,
                                                                               Iterable.class);
 
                     ff.set(pv, new PropertyDescriptor(propertyName, null, writeMethod));
