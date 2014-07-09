@@ -95,7 +95,7 @@ public class EchoClient {
 
         @Override
         public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-            System.out.println(System.currentTimeMillis() + "channelUnregistered");
+            System.out.println(System.currentTimeMillis() + " channelUnregistered");
             ctx.fireChannelUnregistered();
         }
 
