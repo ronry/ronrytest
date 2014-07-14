@@ -69,13 +69,13 @@ public class EchoServer {
 	
     public void stop() throws Exception {
 
-        // 关闭serversoceket,完成之后就不会再接收新链接;可以被acceptorGroup.shutdownGracefully()替代
+        // 关闭serversoceket,完成之后就不会再接收新连接;可以被acceptorGroup.shutdownGracefully()替代
         // serverChannel.close().sync();
         // System.out.println(System.currentTimeMillis() + " server socket channel closed");
 
         // Thread.sleep(8000);
 
-        // 关闭acceptor线程
+        // 关闭acceptor线程,完成之后就不会再接收新连接
         acceptorGroup.shutdownGracefully().sync();
         System.out.println(System.currentTimeMillis() + " acceptor group shutdown");
 
@@ -85,7 +85,7 @@ public class EchoServer {
         ioGroup.shutdownGracefully().sync();
         System.out.println(System.currentTimeMillis() + " io group shutdown");
 
-        // 是否应该还有一步骤是关闭socket:好像不用
+        // 是否应该还有一步骤是关闭socket？不用！
         System.out.println("echo server stopped ");
 
     }
