@@ -20,7 +20,7 @@ public class HbaseCRUDTest {
 
     static {
         try {
-            table = new HTable(HBaseConfiguration.create(), "testtable");
+            table = new HTable(HBaseConfiguration.create(), "testbigtable");
         } catch (IOException e) {
         }
     }
@@ -35,16 +35,35 @@ public class HbaseCRUDTest {
     }
 
     public static void testScan() throws Exception {
-        ResultScanner scan = table.getScanner(new Scan(Bytes.toBytes("row000")));
-        Result[] results = scan.next(2);
+        ResultScanner scan = table.getScanner(new Scan(Bytes.toBytes("row0000000000")));
+        long begin = System.currentTimeMillis();
+        Result[] results = scan.next(100);
 
         if (results != null && results.length > 0) {
             for (Result result : results) {
-                System.out.println("value:" + Bytes.toString((result.getValue(FIRST_COLUM_FAMILY1, NAME_COLUM))));
+                System.out.println("value:" + Bytes.toString((result.getRow())));
             }
         } else {
             System.out.println("no data");
         }
+
+        System.out.println("used " + (System.currentTimeMillis() - begin));
+
+        scan.close();
+
+        scan = table.getScanner(new Scan(Bytes.toBytes("row00006017549")));
+        begin = System.currentTimeMillis();
+        results = scan.next(100);
+
+        if (results != null && results.length > 0) {
+            for (Result result : results) {
+                System.out.println("value:" + Bytes.toString((result.getRow())));
+            }
+        } else {
+            System.out.println("no data");
+        }
+
+        System.out.println("used " + (System.currentTimeMillis() - begin));
 
         scan.close();
     }
