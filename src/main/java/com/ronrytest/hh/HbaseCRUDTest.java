@@ -34,14 +34,15 @@ public class HbaseCRUDTest {
         System.out.println("insert success");
     }
 
-    public static void testScan() throws Exception {
+    public static void testScan(String startRow) throws Exception {
         ResultScanner scan = table.getScanner(new Scan(Bytes.toBytes("row0000000000")));
         long begin = System.currentTimeMillis();
         Result[] results = scan.next(100);
 
         if (results != null && results.length > 0) {
             for (Result result : results) {
-                System.out.println("value:" + Bytes.toString((result.getRow())));
+                Bytes.toString((result.getRow()));
+                // System.out.println("value:" + Bytes.toString((result.getRow())));
             }
         } else {
             System.out.println("no data");
@@ -51,19 +52,20 @@ public class HbaseCRUDTest {
 
         scan.close();
 
-        scan = table.getScanner(new Scan(Bytes.toBytes("row00006017549")));
+        scan = table.getScanner(new Scan(Bytes.toBytes("row"+startRow)));
         begin = System.currentTimeMillis();
         results = scan.next(100);
 
         if (results != null && results.length > 0) {
             for (Result result : results) {
-                System.out.println("value:" + Bytes.toString((result.getRow())));
+                // Bytes.toString((result.getRow()));
+                // System.out.println("value:" + Bytes.toString((result.getRow())));
             }
         } else {
             System.out.println("no data");
         }
 
-        System.out.println("used " + (System.currentTimeMillis() - begin));
+        System.out.println(startRow + " scan used " + (System.currentTimeMillis() - begin));
 
         scan.close();
     }
@@ -74,7 +76,7 @@ public class HbaseCRUDTest {
      */
     public static void main(String[] args) throws Exception {
         // testInsert();
-        testScan();
+        testScan("00008017549");
     }
 
 }
