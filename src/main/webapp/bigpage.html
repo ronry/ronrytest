@@ -1,0 +1,2536 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+   	<title>Java 代码优化过程的实例介绍 - WEB程序开发-ITPUB论坛-it168旗下专业技术社区</title>
+    <meta name="google-site-verification" content="PCtT87x2xdw72lBmo7IOV6DwrTvvsTe0dMFlt0CplaI" /><link href="http://www.itpub.net/thread-1783925-1-1.html" rel="canonical" /><meta name="keywords" content="Java 代码优化过程的实例介绍" />
+<meta name="description" content=" Java 代码优化过程的实例介绍 ,ITPUB论坛" />
+<meta name="MSSmartTagsPreventParsing" content="True" />
+<meta http-equiv="MSThemeCompatible" content="Yes" />
+<base href="http://www.itpub.net/" /><link rel="stylesheet" type="text/css" href="data/cache/style_2_common.css?o2L" /><link rel="stylesheet" type="text/css" href="data/cache/style_2_forum_viewthread.css?o2L" /><script type="text/javascript">var STYLEID = '2', STATICURL = 'static/', IMGDIR = 'http://itpub.img168.net/static/image/common', VERHASH = 'o2L', charset = 'gbk', discuz_uid = '0', cookiepre = 'Nxkw_2132_', cookiedomain = '', cookiepath = '/', showusercard = '0', attackevasive = '0', disallowfloat = 'newthread', creditnotice = '', defaultstyle = '', REPORTURL = 'aHR0cDovL3d3dy5pdHB1Yi5uZXQvZm9ydW0ucGhwP21vZD12aWV3dGhyZWFkJnRpZD0xNzgzOTI1Jm9yZGVydHlwZT0x', SITEURL = 'http://www.itpub.net/', JSPATH = 'data/cache/';</script>
+    
+<script src="data/cache/common.js?o2L" type="text/javascript"></script>
+
+
+<script src="/static/js/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript"> 
+var jq = jQuery.noConflict();
+</script>
+ 
+    
+<meta name="application-name" content="ITPUB论坛" />
+<meta name="msapplication-tooltip" content="ITPUB论坛" />
+<meta name="msapplication-task" content="name=门户;action-uri=http://www.itpub.net/portal.php;icon-uri=http://www.itpub.net/http://itpub.img168.net/static/image/common/portal.ico" /><meta name="msapplication-task" content="name=论坛;action-uri=http://www.itpub.net/forum.php;icon-uri=http://www.itpub.net/http://itpub.img168.net/static/image/common/bbs.ico" />
+
+<link rel="archives" title="ITPUB论坛" href="http://www.itpub.net/archiver/" />
+<link rel="stylesheet" id="css_widthauto" type="text/css" href="data/cache/style_2_widthauto.css?o2L" />
+<script type="text/javascript">HTMLNODE.className += ' widthauto'</script>
+<script src="data/cache/forum.js?o2L" type="text/javascript"></script>
+    
+<style>
+    .popupmenu_popup{background:none repeat scroll 0 0 #FEFEFE;border:1px solid #7FCAE2;overflow:hidden;padding:10px;text-align:left;}.popupmenu_popup li{line-height:20px;margin:3px 0;}.popupmenu_popup a,.popupmenu_popup strong{background:none repeat scroll 0 0 transparent;color:#666666;white-space:nowrap;}.popupmenu_popup{overflow:visible;}
+    </style>
+</head>
+<body id="nv_forum" class="pg_viewthread" onkeydown="if(event.keyCode==27) return false;">
+<div id="append_parent"></div><div id="ajaxwaitid"></div>
+      
+        <!--//ITPUB 去掉加入首页-->
+
+
+<div id="qmenu_menu" class="p_pop blk" style="display: none;">
+<div class="ptm pbw hm">
+请 <a href="javascript:;" class="xi2" onclick="lsSubmit()"><strong>登录</strong></a> 后使用快捷导航<br />没有帐号？<a href="member.php?mod=register.php" class="xi2 xw1">注册</a>
+</div>
+</div>
+        
+        
+        <div id="hd">
+<div class="wp">
+<div class="hdc cl"><h2><a href="./forum.php" title="ITPUB论坛"><img src="http://itpub.img168.net/static/image/common/logo.png" alt="ITPUB论坛" border="0" /></a></h2>
+
+<script src="data/cache/logging.js?o2L" type="text/javascript"></script>
+<form method="post" autocomplete="off" id="lsform" action="member.php?mod=logging&amp;action=login&amp;loginsubmit=yes&amp;infloat=yes&amp;lssubmit=yes" onsubmit="return lsSubmit()">
+<div class="fastlg cl">
+<span id="return_ls" style="display:none"></span>
+<div class="y pns">
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td>
+<span class="ftid">
+<select name="fastloginfield" id="ls_fastloginfield" width="40" tabindex="900">
+<option value="username">用户名</option>
+<option value="uid">UID</option>
+<option value="email">Email</option>
+</select>
+</span>
+<script type="text/javascript">simulateSelect('ls_fastloginfield')</script>
+</td>
+<td><input type="text" name="username" id="ls_username" autocomplete="off" class="px vm" tabindex="901" /></td>
+<td class="fastlg_l"><label for="ls_cookietime"><input type="checkbox" name="cookietime" id="ls_cookietime" class="pc" value="2592000" tabindex="903" />自动登录</label></td>
+                    <!--<td>&nbsp;<a href="javascript:;" onclick="showWindow('login', 'member.php?mod=logging&action=login&viewlostpw=1')">找回密码</a></td>-->
+                    <!--//ITPUB 修改itpub找回密码链接-->
+<td>&nbsp;<a href="http://u.it168.com/findPassword?returnUrl=http%3A%2F%2Fwww.itpub.net%2Fhome.php%3Fmod%3Dspacecp" target="_blank">找回密码</a></td>
+</tr>
+<tr>
+<td><label for="ls_password" class="z psw_w">密码</label></td>
+<td><input type="password" name="password" id="ls_password" class="px vm" autocomplete="off" tabindex="902" /></td>
+<td class="fastlg_l"><button type="submit" class="pn vm" tabindex="904" style="width: 75px;"><em>登录</em></button></td>
+<td>&nbsp;<a href="member.php?mod=register.php" class="xi2 xw1">注册</a></td>
+</tr>
+</table>
+<input type="hidden" name="quickforward" value="yes" />
+<input type="hidden" name="handlekey" value="ls" />
+</div>
+
+<div class="fastlg_fm y" style="margin-right: 10px; padding-right: 10px">
+<p><a href="http://www.itpub.net/connect.php?mod=login&op=init&referer=forum.php%3Fmod%3Dviewthread%26tid%3D1783925%26ordertype%3D1&statfrom=login_simple"><img src="http://itpub.img168.net/static/image/common/qq_login.gif" class="vm" alt="QQ登录" /></a></p>
+<p class="hm xg1" style="padding-top: 2px;">只需一步，快速开始</p>
+</div>
+</div>
+</form>
+</div>
+
+<div id="nv">
+<a href="javascript:;" id="qmenu" onMouseOver="showMenu({'ctrlid':'qmenu','pos':'34!','ctrlclass':'a','duration':2});">快捷导航</a>
+<ul><li class="a" id="mn_N012d" ><a href="http://www.itpub.net/" hidefocus="true" target="_blank"  >首页</a></li><li id="mn_forum" ><a href="forum.php" hidefocus="true" title="BBS"  >论坛<span>BBS</span></a></li><li id="mn_N7ffe" ><a href="http://blog.itpub.net/" hidefocus="true" target="_blank"  >博客</a></li><li id="mn_N1e7e" ><a href="http://tech.it168.com/" hidefocus="true"  >频道</a></li><li id="mn_N5629" ><a href="http://u.it168.com/vip/" hidefocus="true" target="_blank"   style="color: red">认证专区</a></li><li id="mn_Nb839" ><a href="http://www.itpub.net/job/" hidefocus="true"  >招聘</a></li><li id="mn_Nd62a" ><a href="http://www.itpub.net/talk/" hidefocus="true"  >大话IT</a></li><li id="mn_Ne78b" ><a href="http://www.itpub.net/star/" hidefocus="true" target="_blank"  >名人堂</a></li><li id="mn_Na2a0" ><a href="http://ocm.itpub.net/" hidefocus="true" target="_blank"  >OCM联盟</a></li><li id="mn_N668e" ><a href="http://wenku.it168.com/" hidefocus="true" target="_blank"  >文库</a></li><li id="mn_N5120" ><a href="http://www.it168.com/itclub/dtccclub/" hidefocus="true" target="_blank"  >沙龙</a></li><li id="mn_N72e4" ><a href="http://selftest.itpub.net/" hidefocus="true" target="_blank"   style="color: orange">自测</a></li><li id="mn_N66b7" ><a href="http://www.itpub.net/portal.php?mod=topic&topicid=1" hidefocus="true" target="_blank"  >版主团</a></li><li id="mn_Nf448" ><a href="http://www.itpub.net/misc.php?mod=mobile" hidefocus="true" target="_blank"  >手机版</a></li></ul>
+</div>
+<div id="mu" class="cl">
+</div><div id="scbar" class="cl">
+<form id="scbar_form" method="post" autocomplete="off" onsubmit="searchFocus($('scbar_txt'))" action="search.php?searchsubmit=yes" target="_blank">
+<input type="hidden" name="mod" id="scbar_mod" value="search" />
+<input type="hidden" name="formhash" value="7f1f6ad0" />
+<input type="hidden" name="srchtype" value="title" />
+<input type="hidden" name="srhfid" value="76" />
+<input type="hidden" name="srhlocality" value="forum::viewthread" />
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td class="scbar_icon_td"></td>
+<td class="scbar_txt_td"><input type="text" name="srchtxt" id="scbar_txt" value="请输入搜索内容" autocomplete="off" /></td>
+<td class="scbar_type_td"><a href="javascript:;" id="scbar_type" class="showmenu xg1 xs2" onclick="showMenu(this.id)" hidefocus="true">搜索</a></td>
+<td class="scbar_btn_td"><button type="submit" name="searchsubmit" id="scbar_btn" class="pn pnc" value="true"><strong class="xi2 xs2">搜索</strong></button></td>
+                <td style="padding-left:5px; padding-top:5px;" valign="top" align="center"><a href="/search.php?mod=forum&amp;adv=yes" target="_blank"><img src="http://itpub.img168.net/static/image/common/gj_search.png" /></a></td>
+<td class="scbar_hot_td">
+<div id="scbar_hot">
+<strong class="xw1">热搜: </strong><a href="search.php?mod=forum&amp;srchtxt=oracle&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">oracle</a><a href="search.php?mod=forum&amp;srchtxt=SAP&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">SAP</a><a href="search.php?mod=forum&amp;srchtxt=sap&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">sap</a><a href="search.php?mod=forum&amp;srchtxt=%B6%FE%CE%AC%C2%EB&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">二维码</a><a href="search.php?mod=forum&amp;srchtxt=dba&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">dba</a><a href="search.php?mod=forum&amp;srchtxt=Oracle&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">Oracle</a><a href="search.php?mod=forum&amp;srchtxt=c%2B%2B&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">c++</a><a href="search.php?mod=forum&amp;srchtxt=C%2B%2B&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">C++</a><a href="search.php?mod=forum&amp;srchtxt=CRM&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">CRM</a><a href="search.php?mod=forum&amp;srchtxt=%D2%F8%C1%AA%D0%C5%CF%A2%D6%D0%D0%C4&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">银联信息中心</a><a href="search.php?mod=forum&amp;srchtxt=%B1%C8%CC%D8%B1%D2&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">比特币</a><a href="search.php?mod=forum&amp;srchtxt=%D0%A1%B6%EE%B4%FB%BF%EE&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">小额贷款</a><a href="search.php?mod=forum&amp;srchtxt=%B4%FB%BF%EE&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">贷款</a><a href="search.php?mod=forum&amp;srchtxt=crm&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">crm</a><a href="search.php?mod=forum&amp;srchtxt=ORACLE&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">ORACLE</a><a href="search.php?mod=forum&amp;srchtxt=%CF%EE%C4%BF%B9%DC%C0%ED%CF%B5%CD%B3&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">项目管理系统</a><a href="search.php?mod=forum&amp;srchtxt=thread&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">thread</a><a href="search.php?mod=forum&amp;srchtxt=android&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">android</a><a href="search.php?mod=forum&amp;srchtxt=python&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">python</a><a href="search.php?mod=forum&amp;srchtxt=java&amp;formhash=7f1f6ad0&amp;searchsubmit=true&amp;source=hotsearch" target="_blank" class="xi2">java</a></div>
+</td>
+</tr>
+</table>
+</form>
+</div>
+<ul id="scbar_type_menu" class="p_pop" style="display: none;"><li><a href="javascript:;" rel="curforum" class="curtype">本版</a></li><li><a href="javascript:;" rel="forum">帖子</a></li><li><a href="javascript:;" rel="user">用户</a></li></ul>
+<script type="text/javascript">
+initSearchmenu('scbar');
+</script>
+</div>
+</div>
+   
+    
+<div id="wp" class="wp">
+<script type="text/javascript">var fid = parseInt('76'), tid = parseInt('1783925');</script>
+
+<script src="data/cache/forum_viewthread.js?o2L" type="text/javascript"></script>
+<script type="text/javascript">zoomstatus = parseInt(1);var imagemaxwidth = '600';var aimgcount = new Array();</script>
+
+<style id="diy_style" type="text/css"></style>
+<!--[diy=diynavtop]--><div id="diynavtop" class="area"></div><!--[/diy]-->
+<div id="pt" class="bm cl">
+<div class="z">
+<a href="./forum.php" class="nvhm" onmouseover="showMenu({'ctrlid':this.id})" id="fjump" title="首页">ITPUB论坛</a> <em>&rsaquo;</em> <a href="forum.php">论坛</a> <em>&rsaquo;</em> <a href="forum.php?gid=33"> ≡ 开发技术 ≡</a> <em>&rsaquo;</em> <a href="forum-76-1.html">WEB程序开发</a> <em>&rsaquo;</em> <a href="thread-1783925-1-1.html">Java 代码优化过程的实例介绍</a>
+</div>
+</div>
+
+<style id="diy_style" type="text/css"></style>
+<div class="wp">
+<!--[diy=diy1]--><div id="diy1" class="area"></div><!--[/diy]-->
+</div>
+
+<div id="ct" class="wp cl">
+<div id="pgt" class="pgs mbm cl ">
+<div class="pgt"></div>
+<span class="y pgb"><a href="forum-76-1.html">返回列表</a></span>
+<a id="newspecial" onmouseover="$('newspecial').id = 'newspecialtmp';this.id = 'newspecial';showMenu({'ctrlid':this.id})" onclick="showWindow('newthread', 'forum.php?mod=post&action=newthread&fid=76')" href="javascript:;" title="发新帖"><img src="http://itpub.img168.net/static/image/common/pn_post.png" alt="发新帖" /></a>                <!--<div style="text-align:right; padding-top:13px;">分享到&nbsp;<script src="static/js/share_icon.js" type="text/javascript" type="text/javascript"></script>&nbsp;&nbsp;&nbsp;</div>-->
+       
+        <!-- Baidu Button BEGIN -->
+            <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare" style="float:right; padding-top:4px;">
+                <a class="bds_qzone"></a>
+                <a class="bds_tsina"></a>
+                <a class="bds_tqq"></a>
+                <a class="bds_renren"></a>
+                <a class="bds_douban"></a>
+                <a class="bds_taobao"></a>
+                <a class="bds_fbook"></a>
+                <span class="bds_more"></span>
+                <a class="shareCount"></a>
+            </div>
+        <!-- Baidu Button END -->
+       
+        </div>
+
+
+
+<div id="postlist" class="pl bm">
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td class="pls ptm pbm" style="background-color:#5D7790;">
+<div class="hm">
+<span class="xg1">查看:</span> <span class="xi1" style="color:#FFF">809</span><span class="pipe">|</span><span class="xg1">回复:</span> <span class="xi1" style="color:#FFF">9</span>
+</div>
+</td>
+<td class="plc ptm pbn" style="background-color:#5D7790;">
+<div class="y cjf" style="color:#FFF; padding-top:4px; ">
+                        <style>
+                        .cjf a{ color:#FFF;}
+.cjf a i{ font-style:normal; font-size:12px}
+                        </style>
+                        <!--//ITPUB  把分享,收藏按钮移到一楼上方 start at 2011/10/26 11:11-->
+                        
+                                                
+                        <a href="home.php?mod=spacecp&amp;ac=favorite&amp;type=thread&amp;id=1783925" id="k_favorite" onclick="showWindow(this.id, this.href, 'get', 0);" onmouseover="this.title = $('favoritenumber').innerHTML + ' 人收藏'"><i>收藏 </i></a> 
+                        
+                                                
+                                                
+                        <!--//ITPUB  把分享,收藏按钮移到一楼上方 end at 2011/10/26 11:11-->
+                    
+<a href="forum.php?mod=viewthread&amp;action=printable&amp;tid=1783925" title="打印" target="_blank"><img src="http://itpub.img168.net/static/image/common/print.png" alt="打印" class="vm" /></a>
+<a href="forum.php?mod=redirect&amp;goto=nextoldset&amp;tid=1783925" title="上一主题"><img src="http://itpub.img168.net/static/image/common/thread-prev.png" alt="上一主题" class="vm" /></a>
+<a href="forum.php?mod=redirect&amp;goto=nextnewset&amp;tid=1783925" title="下一主题"><img src="http://itpub.img168.net/static/image/common/thread-next.png" alt="下一主题" class="vm" /></a>
+</div>
+<h1 class="ts">
+<a href="thread-1783925-1-1.html" id="thread_subject" style="color:#FFF; font-size:12px;">Java 代码优化过程的实例介绍</a>
+<span class="xw0 xs1 xg1">
+<a href="thread-1783925-1-1.html" onclick="return copyThreadUrl(this)" title="您的朋友访问此链接后，您将获得相应的积分奖励">[复制链接]</a>
+</span>
+</h1>
+</td>
+</tr>
+</table>
+
+
+<table cellspacing="0" cellpadding="0" class="ad"><tr><td class="pls" style="background-color:#F1F1F1"></td><td class="plc" style="background-color:#F1F1F1"></td></tr></table><div id="post_21344517" style="background-color:#F1F1F1; padding-bottom:0px">
+<table id="pid21344517" summary="pid21344517" cellspacing="0" cellpadding="0">
+<tr>
+<td class="pls" rowspan="2" style=" background-color:#DFDFDF">
+ <a name="lastpost"></a><div class="pi">
+<div class="authi"><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xw1">Sky-Tiger</a>
+
+ </div>
+
+</div>
+<div class="p_pop blk bui" id="userinfo21344517" style="display: none; margin-top: -11px;">
+<div class="m z">
+<div id="userinfo21344517_ma"></div>
+</div>
+<div class="i y">
+<div>
+<strong><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xi2">Sky-Tiger</a></strong>
+<em>当前离线</em>
+</div>
+<dl class="cl"><dt>UID</dt><dd>71047</dd><dt>帖子</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=reply&view=me&from=space" target="_blank" class="xi2">206098</a></dd><dt>阅读权限</dt><dd>100</dd><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>技术排名</dt><dd>1 </dd><dt>专家积分</dt><dd>795 </dd><dt>社区排名</dt><dd>4 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>
+<div class="imicn">
+<a href="home.php?mod=space&amp;uid=71047&amp;do=profile" target="_blank" title="查看详细资料"><img src="http://itpub.img168.net/static/image/common/userinfo.gif" alt="查看详细资料" /></a>
+<a href="home.php?mod=magic&amp;mid=showip&amp;idtype=user&amp;id=Sky-Tiger" id="a_showip_li_21344517" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/showip.small.gif" alt="" /> IP卡</a>
+<a href="home.php?mod=magic&amp;mid=checkonline&amp;idtype=user&amp;id=Sky-Tiger" id="a_repent_21344517" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/checkonline.small.gif" alt="" /> 狗仔卡</a>
+</div>
+<div id="avatarfeed"><span id="threadsortswait"></span></div>
+</div>
+</div>
+<div>
+            
+            <!--//ITPUB 是否屏蔽用户头像 -->
+                                                <div class="avatar" onmouseover="showauthor(this, 'userinfo21344517')"><a href="home.php?mod=space&amp;uid=71047" target="_blank"><img src="http://passport.ixpub.net/data/avatar/000/07/10/47_avatar_middle.jpg"   onerror="this.onerror=null;this.src='static/image/common/noavatar_middle.gif'" /></a></div>
+                                        <!--//ITPUB 是否屏蔽用户头像-->
+            
+<p><em><a href="home.php?mod=spacecp&amp;ac=usergroup&amp;gid=34" target="_blank">版主</a></em></p>
+<p class="xg1">天王盖地虎</p></div>
+<p></p>
+<dl class="pil cl"><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>专家积分</dt><dd>795 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>            <dl class="pil cl"><dt>论坛徽章:</dt><dd>227</dd></dl><div style="padding:3px; margin-left:5px; margin-right:5px;"><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/></div>            
+<ul class="xl xl2 o cl">
+<!--<li class="callon"><a href="home.php?mod=space&amp;uid=71047" target="_blank" title="串个门" class="xi2">串个门</a></li>-->
+<li class="buddy"><a href="home.php?mod=spacecp&amp;ac=friend&amp;op=add&amp;uid=71047&amp;handlekey=addfriendhk_71047" id="a_friend_li_21344517" onclick="showWindow(this.id, this.href, 'get', 1, {'ctrlid':this.id,'pos':'00'});" title="加好友" class="xi2">加好友</a></li>
+<!--<li class="poke2"><a href="home.php?mod=spacecp&amp;ac=poke&amp;op=send&amp;uid=71047" id="a_poke_li_21344517" onclick="showWindow(this.id, this.href, 'get', 0);" title="打招呼" class="xi2">打招呼</a></li>-->
+<li class="pm2"><a href="home.php?mod=spacecp&amp;ac=pm&amp;op=showmsg&amp;handlekey=showmsg_71047&amp;touid=71047&amp;pmid=0&amp;daterange=2&amp;pid=21344517&amp;tid=1783925" onclick="showWindow('sendpm', this.href);" title="发消息" class="xi2">发消息</a></li>
+</ul>
+</td>
+<td class="plc" style=" background-color:#DFDFDF">
+<div class="pi">
+<div id="fj" class="y">
+<label class="z">电梯直达</label>
+<input type="text" class="px p_fre z" size="2" onkeyup="$('fj_btn').href='forum.php?mod=redirect&ptid=1783925&authorid=0&postno='+this.value" onkeydown="if(event.keyCode==13) {window.location=$('fj_btn').href;return false;}" title="跳转到指定楼层" />
+<a href="javascript:;" id="fj_btn" class="z" title="跳转到指定楼层"><img src="http://itpub.img168.net/static/image/common/fj_btn.png" alt="跳转到指定楼层" class="vm" /></a>
+</div>
+<strong>
+<a href="thread-1783925-1-1.html" id="postnum21344517" onclick="setCopy(this.href, '帖子地址复制成功');return false;"><em>1</em><sup>#</sup></a>
+</strong>
+<div class="pti">
+<div class="pdbt">
+</div>
+<div class="authi">
+<img class="authicn vm" id="authicon21344517" src="static/image/common/online_moderator.gif" />
+<em id="authorposton21344517">发表于 2013-4-26 20:45:36</em>
+<span class="pipe">|</span><a href="forum.php?mod=viewthread&amp;tid=1783925&amp;page=1&amp;authorid=71047" rel="nofollow">只看该作者</a>
+<span class="pipe">|</span><a href="forum.php?mod=viewthread&amp;tid=1783925&amp;extra=&amp;ordertype=2">正序浏览</a>
+              
+                
+</div>
+</div>
+</div><div class="pct"><style type="text/css">.pcb{margin-right:0}</style><div class="pcb">
+<div class="t_fsz">
+<table cellspacing="0" cellpadding="0"><tr><td class="t_f" id="postmessage_21344517">
+<br />
+衡量程序的标准<br />
+衡量一个程序是否优质，可以从多个角度进行分析。其中，最常见的衡量标准是程序的时间复杂度、空间复杂度，以及代码的可读性、可扩展性。针对程序的时间复杂度和空间复杂度，想要优化程序代码，需要对数据结构与算法有深入的理解，并且熟悉计算机系统的基本概念和原理；而针对代码的可读性和可扩展性，想要优化程序代码，需要深入理解软件架构设计，熟知并会应用合适的设计模式。<br />
+首先，如今计算机系统的存储空间已经足够大了，达到了 TB 级别，因此相比于空间复杂度，时间复杂度是程序员首要考虑的因素。为了追求高性能，在某些频繁操作执行时，甚至可以考虑用空间换取时间。其次，由于受到处理器制造工艺的物理限制、成本限制，CPU 主频的增长遇到了瓶颈，摩尔定律已渐渐失效，每隔 18 个月 CPU 主频即翻倍的时代已经过去了，程序员的编程方式发生了彻底的改变。在目前这个多核多处理器的时代，涌现了原生支持多线程的语言（如 Java）以及分布式并行计算框架（如 Hadoop）。为了使程序充分地利用多核 CPU，简单地实现一个单线程的程序是远远不够的，程序员需要能够编写出并发或者并行的多线程程序。最后，大型软件系统的代码行数达到了百万级，如果没有一个设计良好的软件架构，想在已有代码的基础上进行开发，开发代价和维护成本是无法想象的。一个设计良好的软件应该具有可读性和可扩展性，遵循“开闭原则”、“依赖倒置原则”、“面向接口编程”等。</td></tr></table>
+</div>
+<div id="comment_21344517" class="cm">
+</div>
+<script type="text/javascript">var auc_list_tmp = $('auc_list_tmp');if(auc_list_tmp !== null){document.write(auc_list_tmp.innerHTML);auc_list_tmp.innerHTML='';}
+function lalala(){
+	ajaxget('plugin.php?id=auction:involve&operation=view&tid=1783925&page=1', 'list_ajax');
+	$('list_ajax').style.display = 'block';
+}
+if($('list_ajax')){setTimeout('lalala()', 1000);}
+</script>    <!--//ITPUB JOB 自定义钩子-->
+                
+    <div id="post_rate_div_21344517"></div>
+</div></div>
+
+<div class="ptg mbm">
+<a title="Java" href="misc.php?mod=tag&amp;id=121" target="_blank">Java</a>, <a title="优化" href="misc.php?mod=tag&amp;id=633" target="_blank">优化</a>, <a title="实例" href="misc.php?mod=tag&amp;id=3662" target="_blank">实例</a>, <a title="程序" href="misc.php?mod=tag&amp;id=131" target="_blank">程序</a>, <a title="标准" href="misc.php?mod=tag&amp;id=7435" target="_blank">标准</a></div>
+</td></tr>
+<tr><td class="plc plm" style=" background-color:#DFDFDF">
+<div id="p_btn" class="mtw mbm cl" style="display:none">
+            <a href="home.php?mod=spacecp&amp;ac=favorite&amp;type=thread&amp;id=1783925" id="k_favorite" onclick="showWindow(this.id, this.href, 'get', 0);" onmouseover="this.title = $('favoritenumber').innerHTML + ' 人收藏'"><i><img src="http://itpub.img168.net/static/image/common/fav.gif" alt="收藏" />收藏<span id="favoritenumber">0</span></i></a>
+</div>
+<!--//ITPUB 此处去掉DZ自带相关帖子代码-->
+        
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 start-->
+                <div class="mtw mbw w90">
+            <div  class="tab011">
+                <ul id="tab011">
+                	                                        <li><a>相关帖子</a></li> 
+                                                            <li><a>本版精华</a></li>
+                                        
+                                        <li><a>热门专题</a></li>
+                                        
+                      
+                </ul>
+             </div>
+                                                            <div id="tab011_Content0" class="tab011Cont">
+                    <div class="tab011_l1">
+                        <ul>     
+                                                                                	<li><a href="/thread-1877626-1-1.html" target="_blank">大数据平台的终极优化，《深入JVM内核—原理、诊断与优化》揭秘JVM内幕</a></li>
+                                                        
+                                                                                	<li><a href="/thread-1873403-1-1.html" target="_blank">2014年重磅新课程，MySQL系列第一门课《MySQL数据库查询优化》上线热招，支持者速进！</a></li>
+                                                        
+                                                                                	<li><a href="/thread-1875818-1-1.html" target="_blank">【话题讨论】开源数据库MySQL性能优化：破解谜团！（已公布获奖）</a></li>
+                                                        
+                                                                                	<li><a href="/thread-1878422-1-1.html" target="_blank">【话题讨论】30岁转去做DBA晚不晚，各位前辈指点</a></li>
+                                                        
+                                                                                	<li><a href="/thread-1867275-1-1.html" target="_blank">【话题讨论】内存+关系型数据库能否引领潮流？(已公布获奖名单)</a></li>
+                                                        
+                                                                                	<li><a href="/thread-1868435-1-1.html" target="_blank">【讨论】这种情况，如何优化？</a></li>
+                                                        
+                                                                                	<li><a href="/thread-1848953-1-1.html" target="_blank">#SAP一句话#SAP清账方法</a></li>
+                                                        
+                                                                                	<li><a href="/thread-1848839-1-1.html" target="_blank">【上海市】【上海天玑科技股份有限公司】【Java研发】</a></li>
+                                                        
+                                                                                	<li><a href="/thread-1848890-1-1.html" target="_blank">【上海市】【猎头公司】【Java研发】</a></li>
+                                                        
+                                                                                	<li><a href="/thread-1848944-1-1.html" target="_blank">【广东省】【快尚时装（广州）有限公司】【Java研发】</a></li>
+                                                        
+                                                </ul>
+                        <div class="clear"></div>
+                    </div> 
+                 </div>
+                                                                                                             <div id="tab011_Content1" class="tab011Cont">
+                    <div class="tab011_l1">
+                        <ul>     
+                                                                                	<li><a href="/thread-763290-1-1.html" target="_blank">jsp网站开发四“酷”全书：新闻、论坛、电子商城、博客源程序下载</a></li>
+                                                        
+                                                                                	<li><a href="/thread-898292-1-1.html" target="_blank">Pragmatic.Prototype.and.script.aculo.us.Dec.2007</a></li>
+                                                        
+                                                                                	<li><a href="/thread-836842-1-1.html" target="_blank">OReilly.RESTful.Web.Services.May.2007</a></li>
+                                                        
+                                                                                	<li><a href="/thread-345906-1-1.html" target="_blank">JScript 中文参考 大家共享</a></li>
+                                                        
+                                                                                	<li><a href="/thread-470248-1-1.html" target="_blank">苏昱CSS样式表手册(CSS\滤镜\行为\文档对象模型)</a></li>
+                                                        
+                                                                                	<li><a href="/thread-749491-1-1.html" target="_blank">两本比较好的JavaScript教程和源码大全下载</a></li>
+                                                        
+                                                                                	<li><a href="/thread-660820-1-1.html" target="_blank">JSP2_0技术手册</a></li>
+                                                        
+                                                                                	<li><a href="/thread-349010-1-1.html" target="_blank">css中文手册</a></li>
+                                                        
+                                                                                	<li><a href="/thread-345002-1-1.html" target="_blank">在Tomcat下JSP、Servlet和JavaBean环境的配置</a></li>
+                                                        
+                                                                                	<li><a href="/thread-538700-1-1.html" target="_blank">OReilly HTTP The Definitive Guide</a></li>
+                                                        
+                                                </ul>
+                        <div class="clear"></div>
+                    </div> 
+                 </div>
+                                                                                <div id="tab011_Content2" class="tab011Cont">
+                    <div class="tab011_l1">
+                        <ul>     
+                                                                                	<li><a href="/zhuanti/1025/countwhere_1025134.shtml" target="_blank">如何将COUNT()用在where子句中？</a></li>
+                                                        
+                                                                                	<li><a href="/zhuanti/1001/linuxarm_1001981.shtml" target="_blank">ARM-linux/GTK</a></li>
+                                                        
+                                                                                	<li><a href="/zhuanti/1040/erpfuliaochuli_1040880.shtml" target="_blank">ERP外协处理</a></li>
+                                                        
+                                                                                	<li><a href="/zhuanti/1018/bufferpool_1018817.shtml" target="_blank">buffer pool</a></li>
+                                                        
+                                                                                	<li><a href="/zhuanti/1073/listenerfailedtostartadedicatedserverprocess_1073139.shtml" target="_blank">神马浮云错误listener failed to start a dedicated server process</a></li>
+                                                        
+                                                                                	<li><a href="/zhuanti/1095/oracleora00313_1095518.shtml" target="_blank">Oracle ora-12545</a></li>
+                                                        
+                                                                                	<li><a href="/zhuanti/1087/ora6004097_1087682.shtml" target="_blank">ORA600 [4097]</a></li>
+                                                        
+                                                                                	<li><a href="/zhuanti/1003/androiddoubleframebuffer_1003420.shtml" target="_blank">double take</a></li>
+                                                        
+                                                                                	<li><a href="/zhuanti/1079/mysql2003100061_1079059.shtml" target="_blank">mysql for win2003安装</a></li>
+                                                        
+                                                                                	<li><a href="/zhuanti/1051/frm92100yufuwuqidelianjiezhongduan_1051211.shtml" target="_blank">在线求解：ERP系统频繁出现如下错误:FRM-92100 与服务器的连接中断</a></li>
+                                                        
+                                                </ul>
+                        <div class="clear"></div>
+                    </div> 
+                 </div>
+                                               
+             
+   	    </div>
+   	    <script type=text/javascript>
+function iniMenu(tabObj,selNum,tabTagName,t){
+var collection = document.getElementById(tabObj).getElementsByTagName(tabTagName);
+var selObj = collection[selNum];
+selObj.className = 'here';
+document.getElementById(tabObj+"_Content"+selNum).style.display = "block";
+for(var i = 0; i < collection.length; i++){
+collection[i].num= i;
+collection[i].onmouseover = function(){
+//onclick
+temp = this;
+timer = setTimeout( function(){
+if(temp != selObj){
+selObj.className = '';
+temp.className = 'here';
+document.getElementById( tabObj+"_Content" + temp.num).style.display="block";
+document.getElementById( tabObj+"_Content" + selObj.num).style.display="none";
+selObj = temp;
+}
+},t);
+}
+collection[i].onmouseout = function(){
+clearTimeout(timer);
+}
+}
+}
+iniMenu('tab011',0,'a',200);
+</script>
+                 
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 end-->
+ 
+        <!--//ITPUB 是否显示签名 -->
+                                	<div style="height:2px;"><span style=" border-bottom:1px solid #000; width:230px; float:left; height:1px;"></span></div>
+                <div class="sign" style="max-height:5760px;maxHeightIE:5760px;"><font size="4"><strong>-----孰能浊以静之徐清&nbsp;&nbsp;孰能安以动之徐生-----&nbsp;&nbsp;<br />
+</strong></font><br />
+ －－－－－－－－－－－－－－－－ <br />
+Karaf+Aries+blueprint 研究中...<br />
+Open Stack 研究中... <br />
+OpenDayLight/NFV 研究中... <br />
+OPENCL + Spark+ Hadoop 研究中... <br />
+<br />
+<br />
+<a href="http://weibo.com/2208646772?s=6uyXnP" target="_blank"><img src="http://service.t.sina.com.cn/widget/qmd/2208646772/9f7f6304/1.png" onload="thumbImg(this)" alt="" /></a></div>
+                            <!--//ITPUB 是否显示签名-->
+        
+        <!--//ITPUB 看了又看,显示在帖子的一楼,浏览数大于30-->
+                <!--<div style="width:100%; height:100px;margin-top:5px;"><iframe src="sh/thread_related.php?tid=1783925" scrolling="no" width="100%" height="100" marginwidth="0" marginheight="0" frameborder="0" align="default"></iframe></div>-->
+        </td>
+</tr>
+<tr>
+<td class="pls" style=" background-color:#DFDFDF"></td>
+<td class="plc" style=" background-color:#DFDFDF">
+<div class="po">
+<div class="pob cl">
+                
+                <p>
+<a href="javascript:;" id="mgc_post_21344517" onmouseover="showMenu(this.id)" class="showmenu">使用道具</a>
+<a href="javascript:;" onclick="showWindow('miscreport21344517', 'misc.php?mod=report&rtype=post&rid=21344517&tid=1783925&fid=76', 'get', -1);return false;">举报</a>
+</p>
+                
+<em>
+                
+                    
+                                                                                
+                    <!--//EDIT ITPUB_BOCAI 注释掉推送按钮-->
+                    
+</em>
+
+<ul id="mgc_post_21344517_menu" class="p_pop mgcmn" style="display: none;">
+<li><a href="home.php?mod=magic&amp;mid=bump&amp;idtype=tid&amp;id=1783925" id="a_bump" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/bump.small.gif" />提升卡</a></li>
+<li><a href="home.php?mod=magic&amp;mid=stick&amp;idtype=tid&amp;id=1783925" id="a_stick" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/stick.small.gif" />置顶卡</a></li>
+<li><a href="home.php?mod=magic&amp;mid=highlight&amp;idtype=tid&amp;id=1783925" id="a_stick" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/highlight.small.gif" />变色卡</a></li>
+<li><a href="home.php?mod=magic&amp;mid=namepost&amp;idtype=pid&amp;id=21344517:1783925" id="a_namepost_21344517" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/namepost.small.gif" />显身卡</a><li>
+</ul>
+<script type="text/javascript" reload="1">checkmgcmn('post_21344517')</script>
+</div>
+</div>
+        
+        <!--//ITPUB 增加CU文字链 start by caojingfei at 2012.03.21-->
+                <div class="a_pb"><a href="http://bbs.chinaunix.net/thread-4156214-1-1.html"target="_blank" title="smaba拒绝访问"><b>smaba拒绝访问</b></a>&nbsp;&nbsp|&nbsp;&nbsp<a href="http://bbs.chinaunix.net/thread-4156612-1-1.html"target="_blank" title="用grub进行手动引导时出现的问题（图）"><b>用grub进行手动引导时出现的问题 ...</b></a>&nbsp;&nbsp|&nbsp;&nbsp<a href="http://bbs.chinaunix.net/thread-4156583-1-1.html"target="_blank" title="shell 解析xml的问题"><b>shell 解析xml的问题</b></a>&nbsp;&nbsp|&nbsp;&nbsp<a href="http://bbs.chinaunix.net/thread-4156581-1-1.html"target="_blank" title="按照固定格式，输出选定月的所有日期"><b>按照固定格式，输出选定月的所有 ...</b></a>&nbsp;&nbsp                <!--//ITPUB 增加CU文字链 end by caojingfei at 2012.03.21-->
+
+</td>
+</tr>
+<tr class="ad">
+<td class="pls" style=" background-color:#FFFFFF;height:3px;"></td>
+<td class="plc" style=" background-color:#FFFFFF;height:3px">
+</td>
+</tr>
+</table>
+</div><div id="post_21408998" style=" background-color:#DFDFDF;margin-bottom:0px">
+<table id="pid21408998" summary="pid21408998" cellspacing="0" cellpadding="0">
+<tr>
+<td class="pls" rowspan="2" style="background-color:#F1F1F1">
+ <a name="lastpost"></a><div class="pi">
+<div class="authi"><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xw1">Sky-Tiger</a>
+
+ </div>
+
+</div>
+<div class="p_pop blk bui" id="userinfo21408998" style="display: none; margin-top: -11px;">
+<div class="m z">
+<div id="userinfo21408998_ma"></div>
+</div>
+<div class="i y">
+<div>
+<strong><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xi2">Sky-Tiger</a></strong>
+<em>当前离线</em>
+</div>
+<dl class="cl"><dt>UID</dt><dd>71047</dd><dt>帖子</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=reply&view=me&from=space" target="_blank" class="xi2">206098</a></dd><dt>阅读权限</dt><dd>100</dd><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>技术排名</dt><dd>1 </dd><dt>专家积分</dt><dd>795 </dd><dt>社区排名</dt><dd>4 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>
+<div class="imicn">
+<a href="home.php?mod=space&amp;uid=71047&amp;do=profile" target="_blank" title="查看详细资料"><img src="http://itpub.img168.net/static/image/common/userinfo.gif" alt="查看详细资料" /></a>
+<a href="home.php?mod=magic&amp;mid=showip&amp;idtype=user&amp;id=Sky-Tiger" id="a_showip_li_21408998" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/showip.small.gif" alt="" /> IP卡</a>
+<a href="home.php?mod=magic&amp;mid=checkonline&amp;idtype=user&amp;id=Sky-Tiger" id="a_repent_21408998" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/checkonline.small.gif" alt="" /> 狗仔卡</a>
+</div>
+<div id="avatarfeed"><span id="threadsortswait"></span></div>
+</div>
+</div>
+<div>
+            
+            <!--//ITPUB 是否屏蔽用户头像 -->
+                                                <div class="avatar" onmouseover="showauthor(this, 'userinfo21408998')"><a href="home.php?mod=space&amp;uid=71047" target="_blank"><img src="http://passport.ixpub.net/data/avatar/000/07/10/47_avatar_middle.jpg"   onerror="this.onerror=null;this.src='static/image/common/noavatar_middle.gif'" /></a></div>
+                                        <!--//ITPUB 是否屏蔽用户头像-->
+            
+<p><em><a href="home.php?mod=spacecp&amp;ac=usergroup&amp;gid=34" target="_blank">版主</a></em></p>
+<p class="xg1">天王盖地虎</p></div>
+<p></p>
+<dl class="pil cl"><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>专家积分</dt><dd>795 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>            <dl class="pil cl"><dt>论坛徽章:</dt><dd>227</dd></dl><div style="padding:3px; margin-left:5px; margin-right:5px;"><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/></div>            
+<ul class="xl xl2 o cl">
+<!--<li class="callon"><a href="home.php?mod=space&amp;uid=71047" target="_blank" title="串个门" class="xi2">串个门</a></li>-->
+<li class="buddy"><a href="home.php?mod=spacecp&amp;ac=friend&amp;op=add&amp;uid=71047&amp;handlekey=addfriendhk_71047" id="a_friend_li_21408998" onclick="showWindow(this.id, this.href, 'get', 1, {'ctrlid':this.id,'pos':'00'});" title="加好友" class="xi2">加好友</a></li>
+<!--<li class="poke2"><a href="home.php?mod=spacecp&amp;ac=poke&amp;op=send&amp;uid=71047" id="a_poke_li_21408998" onclick="showWindow(this.id, this.href, 'get', 0);" title="打招呼" class="xi2">打招呼</a></li>-->
+<li class="pm2"><a href="home.php?mod=spacecp&amp;ac=pm&amp;op=showmsg&amp;handlekey=showmsg_71047&amp;touid=71047&amp;pmid=0&amp;daterange=2&amp;pid=21408998&amp;tid=1783925" onclick="showWindow('sendpm', this.href);" title="发消息" class="xi2">发消息</a></li>
+</ul>
+</td>
+<td class="plc" style="background-color:#F1F1F1">
+<div class="pi">
+<strong>
+<a href="forum.php?mod=redirect&goto=findpost&ptid=1783925&pid=21408998" id="postnum21408998" onclick="setCopy(this.href, '帖子地址复制成功');return false;"><em>10</em><sup>#</sup></a>
+</strong>
+<div class="pti">
+<div class="pdbt">
+</div>
+<div class="authi">
+<img class="authicn vm" id="authicon21408998" src="static/image/common/online_moderator.gif" />
+<em id="authorposton21408998">发表于 2013-5-15 20:57:10</em>
+<span class="pipe">|</span><a href="forum.php?mod=viewthread&amp;tid=1783925&amp;page=1&amp;authorid=71047" rel="nofollow">只看该作者</a>
+              
+                
+</div>
+</div>
+</div><div class="pct"><div class="pcb">
+<div class="t_fsz">
+<table cellspacing="0" cellpadding="0"><tr><td class="t_f" id="postmessage_21408998">
+从原始 post 时代到现代，Ajax 领域的最大改变是引入了 JSON，JSON 是一种基于 JavaScript 的数据传输。提供更小的文件和更便利的原生 JavaScript 访问（与 XML 使用的笨重的基于 DOM 的方法和属性截然相反），JSON 很快就被开发人员用于进行数据传输。现在 JSON 已列入近期完成的 ECMAScript 规范的第 5 版。<br />
+JSON+Padding<br />
+原始 JSON 提议的一个显著增强是 JSON+Padding (JSONP)。正如您所看到的，XMLHttpRequest 对象有一个严格的安全模型，只支持使用与请求页面相同的域名和协议进行通信。JSONP 在这个跨域限制上创建了一种更为灵活的方法，将 JSON 响应包装到一个用户定义或系统提供的回调函数中。将 JSON 脚本添加到文档之后，该方法将会提供即时数据访问。该模式现在很常见，对于许多较大的 Web 服务，可以采用该实践来支持混搭应用和其他内容联合。<br />
+尽管 JSONP 非常流行，但它有一个明显的便于恶意代码入侵的漏洞。因为来自第三方的脚本标记注入允许所有内容在主机页面上运行，所以，在数据提供者受到威胁时，或者主机页面没有留意插入页面的资源时，恶意入侵潜能将会令人想象。<br />
+现在，您已经对 Ajax 历史有所了解，接下来我们将开始探讨将魔法变成现实的技术。尽管，一般的 JavaScript API 书籍在图书馆中随处可见，但即使对于经验丰富的开发人员，了解底层工作原理仍然是具有启发意义的。<br />
+回页首<br />
+XMLHttpRequest API 和特性<br />
+尽管可以使用其他技术从服务器中返回数据，但是 XHR 仍然是大多数 Ajax 交互的核心。XHR 交互由两部分组成：请求和响应。下面我们将逐个介绍。<br />
+安全模型<br />
+正如上面所提到的，原始 XMLHttpRequest 对象有一个严格的安全模型。这个同源策略只 允许使用与请求页面相同的主机、协议和端口进行通信。这意味着不同域（example.com 和 example2.com）、不同主机（my.example.com 和 <a href="http://www.example.com" target="_blank">www.example.com</a>）、不同协议（<a href="http://example.com" target="_blank">http://example.com</a> 和 <a href="https://example.com" target="_blank">https://example.com</a>）之间的通信是禁止的，这会产生错误消息。<br />
+随着第二版 XHR 对象的开发，新的跨域请求协议工作将在 W3C 中完成，大量实现工作由浏览器供应商完成，针对跨域请求的机制目前仅在 Internet Explorer 8+、Mozilla Firefox 3.5+、Apple Safari 4+ 以及 Google Chrome 中提供。尽管发展已经放缓，但仍在请求中发送了一个特定 “Origin” 报头：</td></tr></table>
+</div>
+<div id="comment_21408998" class="cm">
+</div>
+    <!--//ITPUB JOB 自定义钩子-->
+        
+    <div id="post_rate_div_21408998"></div>
+</div></div>
+
+</td></tr>
+<tr><td class="plc plm" style="background-color:#F1F1F1">
+<!--//ITPUB 此处去掉DZ自带相关帖子代码-->
+        
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 start-->
+                 
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 end-->
+ 
+        <!--//ITPUB 是否显示签名 -->
+                                	<div style="height:2px;"><span style=" border-bottom:1px solid #000; width:230px; float:left; height:1px;"></span></div>
+                <div class="sign" style="max-height:5760px;maxHeightIE:5760px;"><font size="4"><strong>-----孰能浊以静之徐清&nbsp;&nbsp;孰能安以动之徐生-----&nbsp;&nbsp;<br />
+</strong></font><br />
+ －－－－－－－－－－－－－－－－ <br />
+Karaf+Aries+blueprint 研究中...<br />
+Open Stack 研究中... <br />
+OpenDayLight/NFV 研究中... <br />
+OPENCL + Spark+ Hadoop 研究中... <br />
+<br />
+<br />
+<a href="http://weibo.com/2208646772?s=6uyXnP" target="_blank"><img src="http://service.t.sina.com.cn/widget/qmd/2208646772/9f7f6304/1.png" onload="thumbImg(this)" alt="" /></a></div>
+                            <!--//ITPUB 是否显示签名-->
+        
+        <!--//ITPUB 看了又看,显示在帖子的一楼,浏览数大于30-->
+        </td>
+</tr>
+<tr>
+<td class="pls" style="background-color:#F1F1F1"></td>
+<td class="plc" style="background-color:#F1F1F1">
+<div class="po">
+<div class="pob cl">
+                
+                <p>
+<a href="javascript:;" id="mgc_post_21408998" onmouseover="showMenu(this.id)" class="showmenu">使用道具</a>
+<a href="javascript:;" onclick="showWindow('miscreport21408998', 'misc.php?mod=report&rtype=post&rid=21408998&tid=1783925&fid=76', 'get', -1);return false;">举报</a>
+</p>
+                
+<em>
+                
+                    
+                                        
+                    <!--//EDIT ITPUB_BOCAI 注释掉推送按钮-->
+                    
+</em>
+
+<ul id="mgc_post_21408998_menu" class="p_pop mgcmn" style="display: none;">
+<li><a href="home.php?mod=magic&amp;mid=namepost&amp;idtype=pid&amp;id=21408998:1783925" id="a_namepost_21408998" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/namepost.small.gif" />显身卡</a><li>
+</ul>
+<script type="text/javascript" reload="1">checkmgcmn('post_21408998')</script>
+</div>
+</div>
+        
+        <!--//ITPUB 增加CU文字链 start by caojingfei at 2012.03.21-->
+                <!--//ITPUB 增加CU文字链 end by caojingfei at 2012.03.21-->
+
+</td>
+</tr>
+<tr class="ad">
+<td class="pls" style=" background-color:#FFFFFF;height:3px;"></td>
+<td class="plc" style=" background-color:#FFFFFF;height:3px">
+</td>
+</tr>
+</table>
+</div><div id="post_21408996" style="background-color:#F1F1F1; padding-bottom:0px">
+<table id="pid21408996" summary="pid21408996" cellspacing="0" cellpadding="0">
+<tr>
+<td class="pls" rowspan="2" style=" background-color:#DFDFDF">
+ <div class="pi">
+<div class="authi"><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xw1">Sky-Tiger</a>
+
+ </div>
+
+</div>
+<div class="p_pop blk bui" id="userinfo21408996" style="display: none; margin-top: -11px;">
+<div class="m z">
+<div id="userinfo21408996_ma"></div>
+</div>
+<div class="i y">
+<div>
+<strong><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xi2">Sky-Tiger</a></strong>
+<em>当前离线</em>
+</div>
+<dl class="cl"><dt>UID</dt><dd>71047</dd><dt>帖子</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=reply&view=me&from=space" target="_blank" class="xi2">206098</a></dd><dt>阅读权限</dt><dd>100</dd><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>技术排名</dt><dd>1 </dd><dt>专家积分</dt><dd>795 </dd><dt>社区排名</dt><dd>4 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>
+<div class="imicn">
+<a href="home.php?mod=space&amp;uid=71047&amp;do=profile" target="_blank" title="查看详细资料"><img src="http://itpub.img168.net/static/image/common/userinfo.gif" alt="查看详细资料" /></a>
+<a href="home.php?mod=magic&amp;mid=showip&amp;idtype=user&amp;id=Sky-Tiger" id="a_showip_li_21408996" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/showip.small.gif" alt="" /> IP卡</a>
+<a href="home.php?mod=magic&amp;mid=checkonline&amp;idtype=user&amp;id=Sky-Tiger" id="a_repent_21408996" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/checkonline.small.gif" alt="" /> 狗仔卡</a>
+</div>
+<div id="avatarfeed"><span id="threadsortswait"></span></div>
+</div>
+</div>
+<div>
+            
+            <!--//ITPUB 是否屏蔽用户头像 -->
+                                                <div class="avatar" onmouseover="showauthor(this, 'userinfo21408996')"><a href="home.php?mod=space&amp;uid=71047" target="_blank"><img src="http://passport.ixpub.net/data/avatar/000/07/10/47_avatar_middle.jpg"   onerror="this.onerror=null;this.src='static/image/common/noavatar_middle.gif'" /></a></div>
+                                        <!--//ITPUB 是否屏蔽用户头像-->
+            
+<p><em><a href="home.php?mod=spacecp&amp;ac=usergroup&amp;gid=34" target="_blank">版主</a></em></p>
+<p class="xg1">天王盖地虎</p></div>
+<p></p>
+<dl class="pil cl"><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>专家积分</dt><dd>795 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>            <dl class="pil cl"><dt>论坛徽章:</dt><dd>227</dd></dl><div style="padding:3px; margin-left:5px; margin-right:5px;"><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/></div>            
+<ul class="xl xl2 o cl">
+<!--<li class="callon"><a href="home.php?mod=space&amp;uid=71047" target="_blank" title="串个门" class="xi2">串个门</a></li>-->
+<li class="buddy"><a href="home.php?mod=spacecp&amp;ac=friend&amp;op=add&amp;uid=71047&amp;handlekey=addfriendhk_71047" id="a_friend_li_21408996" onclick="showWindow(this.id, this.href, 'get', 1, {'ctrlid':this.id,'pos':'00'});" title="加好友" class="xi2">加好友</a></li>
+<!--<li class="poke2"><a href="home.php?mod=spacecp&amp;ac=poke&amp;op=send&amp;uid=71047" id="a_poke_li_21408996" onclick="showWindow(this.id, this.href, 'get', 0);" title="打招呼" class="xi2">打招呼</a></li>-->
+<li class="pm2"><a href="home.php?mod=spacecp&amp;ac=pm&amp;op=showmsg&amp;handlekey=showmsg_71047&amp;touid=71047&amp;pmid=0&amp;daterange=2&amp;pid=21408996&amp;tid=1783925" onclick="showWindow('sendpm', this.href);" title="发消息" class="xi2">发消息</a></li>
+</ul>
+</td>
+<td class="plc" style=" background-color:#DFDFDF">
+<div class="pi">
+<strong>
+<a href="forum.php?mod=redirect&goto=findpost&ptid=1783925&pid=21408996" id="postnum21408996" onclick="setCopy(this.href, '帖子地址复制成功');return false;"><em>9</em><sup>#</sup></a>
+</strong>
+<div class="pti">
+<div class="pdbt">
+</div>
+<div class="authi">
+<img class="authicn vm" id="authicon21408996" src="static/image/common/online_moderator.gif" />
+<em id="authorposton21408996">发表于 2013-5-15 20:56:53</em>
+<span class="pipe">|</span><a href="forum.php?mod=viewthread&amp;tid=1783925&amp;page=1&amp;authorid=71047" rel="nofollow">只看该作者</a>
+              
+                
+</div>
+</div>
+</div><div class="pct"><div class="pcb">
+<div class="t_fsz">
+<table cellspacing="0" cellpadding="0"><tr><td class="t_f" id="postmessage_21408996">
+除了 Microsoft 之外，还有其他一些企业开始进军原型 Ajax 领域。许多企业都开始尝试使用这些技术，其中有两个特别值得一提 — 一个是因为它是一个有趣且经常引用的 Ajax 开发脚注，另一个是因为它是真正将这些技术大众化的 Internet 巨头。<br />
+Oddpost<br />
+Oddpost 是 2002 年推出的基于 Web 的高级邮件客户端。它利用许多目前人们所熟知的模式。在设计和交互方面，人们会想起桌面邮件客户端。在系统内部，Oddpost 使用开发人员称为 DataPacks 的概念将小块数据从服务器传输到浏览器。这将带来一种全新体验。<br />
+Oddpost 最后被 Yahoo！收购，成为 Yahoo! Mail 修订版的基础。<br />
+Google Maps、Google Suggest、Gmail 以及一篇重要文章<br />
+真正的变化开始于几年后的 Gmail、Google Suggest 和 Google Maps 服务。这三项 Ajax 技术的使用使得 Web 开发界沸腾起来。它的响应能力和交互性对公众而言是全新的。新的 Google 应用程序很快引起了轰动。<br />
+虽然了解它的人并不是很多，但 Web 开发界对此反响非常剧烈。当时，人们知道在 Web 应用程序开发中出现了一些新的、激动人心的内容。但在很长一段时期内，这个 “内容” 一度模糊不清。<br />
+人们需要的是一篇让该内容明朗化的文章。<br />
+2005 年 2 月 18 日，Adaptive Path 的共同创立者兼总裁 Jesse James Garrett 撰写了一篇题为 “Ajax: A New Approach to Web Applications” 的文章（参阅 参考资料）。在这篇文章中，他介绍了 Web 应用程序设计开发的趋势，诸如 Gmail 和 Google Maps 这类应用程序人们一直都在使用。他称这种趋势为 “可能引发 Web 开发的根本性变革。”<br />
+他还为这种模式命名，这是一个重要的时刻，因为从这一刻起人们开始重点关注这一新趋势，每个人（甚至是非专业人员）在谈及 Web 开发界近期最新变化时都会提到它。在本文中，他是这样介绍 Ajax 这种技术的：<br />
+定义 Ajax<br />
+Ajax 不是一种技术。实际上是几种技术，每种技术都各有其特色，这些技术以全新强大方式融合在一起。Ajax 包含：<br />
+使用 XHTML 和 CSS 基于标准的呈现<br />
+使用文档对象模型的动态显示和交互<br />
+使用 XML 和 XSLT 的数据交换和操作<br />
+使用 XMLHttpRequest 的异步数据检索<br />
+将它们绑定到一起的 JavaScript<br />
+虽然这个技术说明从某种程度上讲有些过时了，但基本模式依然是完整的：HTML 和 CSS 呈现数据和样式，DOM 和相关方法支持页面实时更新，XHR 支持与服务器通信，JavaScript 安排整体显示。<br />
+本文的总体影响比较大。密集的大肆宣传与亟待开发的创造力和能源相碰撞，掀起了一场革命，这实属难得一见。由于 Ajax 被世界范围的新一代创业企业所采用，它迅速走向 Web 开发范式的前沿。Ajax 从一个寻求市场策略的模糊趋势一跃成为现代 Web 设计的开发的关键组成部分。</td></tr></table>
+</div>
+<div id="comment_21408996" class="cm">
+</div>
+    <!--//ITPUB JOB 自定义钩子-->
+        
+    <div id="post_rate_div_21408996"></div>
+</div></div>
+
+</td></tr>
+<tr><td class="plc plm" style=" background-color:#DFDFDF">
+<!--//ITPUB 此处去掉DZ自带相关帖子代码-->
+        
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 start-->
+                 
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 end-->
+ 
+        <!--//ITPUB 是否显示签名 -->
+                                	<div style="height:2px;"><span style=" border-bottom:1px solid #000; width:230px; float:left; height:1px;"></span></div>
+                <div class="sign" style="max-height:5760px;maxHeightIE:5760px;"><font size="4"><strong>-----孰能浊以静之徐清&nbsp;&nbsp;孰能安以动之徐生-----&nbsp;&nbsp;<br />
+</strong></font><br />
+ －－－－－－－－－－－－－－－－ <br />
+Karaf+Aries+blueprint 研究中...<br />
+Open Stack 研究中... <br />
+OpenDayLight/NFV 研究中... <br />
+OPENCL + Spark+ Hadoop 研究中... <br />
+<br />
+<br />
+<a href="http://weibo.com/2208646772?s=6uyXnP" target="_blank"><img src="http://service.t.sina.com.cn/widget/qmd/2208646772/9f7f6304/1.png" onload="thumbImg(this)" alt="" /></a></div>
+                            <!--//ITPUB 是否显示签名-->
+        
+        <!--//ITPUB 看了又看,显示在帖子的一楼,浏览数大于30-->
+        </td>
+</tr>
+<tr>
+<td class="pls" style=" background-color:#DFDFDF"></td>
+<td class="plc" style=" background-color:#DFDFDF">
+<div class="po">
+<div class="pob cl">
+                
+                <p>
+<a href="javascript:;" id="mgc_post_21408996" onmouseover="showMenu(this.id)" class="showmenu">使用道具</a>
+<a href="javascript:;" onclick="showWindow('miscreport21408996', 'misc.php?mod=report&rtype=post&rid=21408996&tid=1783925&fid=76', 'get', -1);return false;">举报</a>
+</p>
+                
+<em>
+                
+                    
+                                        
+                    <!--//EDIT ITPUB_BOCAI 注释掉推送按钮-->
+                    
+</em>
+
+<ul id="mgc_post_21408996_menu" class="p_pop mgcmn" style="display: none;">
+<li><a href="home.php?mod=magic&amp;mid=namepost&amp;idtype=pid&amp;id=21408996:1783925" id="a_namepost_21408996" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/namepost.small.gif" />显身卡</a><li>
+</ul>
+<script type="text/javascript" reload="1">checkmgcmn('post_21408996')</script>
+</div>
+</div>
+        
+        <!--//ITPUB 增加CU文字链 start by caojingfei at 2012.03.21-->
+                <!--//ITPUB 增加CU文字链 end by caojingfei at 2012.03.21-->
+
+</td>
+</tr>
+<tr class="ad">
+<td class="pls" style=" background-color:#FFFFFF;height:3px;"></td>
+<td class="plc" style=" background-color:#FFFFFF;height:3px">
+</td>
+</tr>
+</table>
+</div><div id="post_21408994" style=" background-color:#DFDFDF;margin-bottom:0px">
+<table id="pid21408994" summary="pid21408994" cellspacing="0" cellpadding="0">
+<tr>
+<td class="pls" rowspan="2" style="background-color:#F1F1F1">
+ <div class="pi">
+<div class="authi"><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xw1">Sky-Tiger</a>
+
+ </div>
+
+</div>
+<div class="p_pop blk bui" id="userinfo21408994" style="display: none; margin-top: -11px;">
+<div class="m z">
+<div id="userinfo21408994_ma"></div>
+</div>
+<div class="i y">
+<div>
+<strong><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xi2">Sky-Tiger</a></strong>
+<em>当前离线</em>
+</div>
+<dl class="cl"><dt>UID</dt><dd>71047</dd><dt>帖子</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=reply&view=me&from=space" target="_blank" class="xi2">206098</a></dd><dt>阅读权限</dt><dd>100</dd><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>技术排名</dt><dd>1 </dd><dt>专家积分</dt><dd>795 </dd><dt>社区排名</dt><dd>4 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>
+<div class="imicn">
+<a href="home.php?mod=space&amp;uid=71047&amp;do=profile" target="_blank" title="查看详细资料"><img src="http://itpub.img168.net/static/image/common/userinfo.gif" alt="查看详细资料" /></a>
+<a href="home.php?mod=magic&amp;mid=showip&amp;idtype=user&amp;id=Sky-Tiger" id="a_showip_li_21408994" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/showip.small.gif" alt="" /> IP卡</a>
+<a href="home.php?mod=magic&amp;mid=checkonline&amp;idtype=user&amp;id=Sky-Tiger" id="a_repent_21408994" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/checkonline.small.gif" alt="" /> 狗仔卡</a>
+</div>
+<div id="avatarfeed"><span id="threadsortswait"></span></div>
+</div>
+</div>
+<div>
+            
+            <!--//ITPUB 是否屏蔽用户头像 -->
+                                                <div class="avatar" onmouseover="showauthor(this, 'userinfo21408994')"><a href="home.php?mod=space&amp;uid=71047" target="_blank"><img src="http://passport.ixpub.net/data/avatar/000/07/10/47_avatar_middle.jpg"   onerror="this.onerror=null;this.src='static/image/common/noavatar_middle.gif'" /></a></div>
+                                        <!--//ITPUB 是否屏蔽用户头像-->
+            
+<p><em><a href="home.php?mod=spacecp&amp;ac=usergroup&amp;gid=34" target="_blank">版主</a></em></p>
+<p class="xg1">天王盖地虎</p></div>
+<p></p>
+<dl class="pil cl"><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>专家积分</dt><dd>795 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>            <dl class="pil cl"><dt>论坛徽章:</dt><dd>227</dd></dl><div style="padding:3px; margin-left:5px; margin-right:5px;"><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/></div>            
+<ul class="xl xl2 o cl">
+<!--<li class="callon"><a href="home.php?mod=space&amp;uid=71047" target="_blank" title="串个门" class="xi2">串个门</a></li>-->
+<li class="buddy"><a href="home.php?mod=spacecp&amp;ac=friend&amp;op=add&amp;uid=71047&amp;handlekey=addfriendhk_71047" id="a_friend_li_21408994" onclick="showWindow(this.id, this.href, 'get', 1, {'ctrlid':this.id,'pos':'00'});" title="加好友" class="xi2">加好友</a></li>
+<!--<li class="poke2"><a href="home.php?mod=spacecp&amp;ac=poke&amp;op=send&amp;uid=71047" id="a_poke_li_21408994" onclick="showWindow(this.id, this.href, 'get', 0);" title="打招呼" class="xi2">打招呼</a></li>-->
+<li class="pm2"><a href="home.php?mod=spacecp&amp;ac=pm&amp;op=showmsg&amp;handlekey=showmsg_71047&amp;touid=71047&amp;pmid=0&amp;daterange=2&amp;pid=21408994&amp;tid=1783925" onclick="showWindow('sendpm', this.href);" title="发消息" class="xi2">发消息</a></li>
+</ul>
+</td>
+<td class="plc" style="background-color:#F1F1F1">
+<div class="pi">
+<strong>
+<a href="forum.php?mod=redirect&goto=findpost&ptid=1783925&pid=21408994" id="postnum21408994" onclick="setCopy(this.href, '帖子地址复制成功');return false;"><em>8</em><sup>#</sup></a>
+</strong>
+<div class="pti">
+<div class="pdbt">
+</div>
+<div class="authi">
+<img class="authicn vm" id="authicon21408994" src="static/image/common/online_moderator.gif" />
+<em id="authorposton21408994">发表于 2013-5-15 20:56:23</em>
+<span class="pipe">|</span><a href="forum.php?mod=viewthread&amp;tid=1783925&amp;page=1&amp;authorid=71047" rel="nofollow">只看该作者</a>
+              
+                
+</div>
+</div>
+</div><div class="pct"><div class="pcb">
+<div class="t_fsz">
+<table cellspacing="0" cellpadding="0"><tr><td class="t_f" id="postmessage_21408994">
+import java.io.BufferedReader; <br />
+ import java.io.File; <br />
+ import java.io.FileReader; <br />
+ import java.io.FileWriter; <br />
+ import java.io.PrintWriter; <br />
+ import java.io.IOException; <br />
+ public class SeleniumTSConfiger{ <br />
+ public static void main(String[] args) { <br />
+&nbsp; &nbsp;try { <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;String sTSFilePath; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;String stemp; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;String sContent = &quot;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;String sOutput = &quot;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;String sHTML = &quot;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;//TSList.config 包含了要合并的测试组件路径的列表<br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;File file = new File(&quot;.\\TSList.config&quot;); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;FileReader fileReader = new FileReader(file); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;BufferedReader bufferedReader = new BufferedReader(fileReader); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;StringBuffer stringBuffer = new StringBuffer(); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;//OutputFile.config 包含了合并后的测试组件的路径<br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;File file2 = new File(&quot;.\\OutputFile.config&quot;); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;FileReader fileReader2 = new FileReader(file2); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;BufferedReader bufferedReader2 = new BufferedReader(fileReader2); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;StringBuffer stringBuffer2 = new StringBuffer(); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;// 读取合并后的测试组件的路径并创建合并后的测试组件<br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sOutput = bufferedReader2.readLine(); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sOutput = sOutput.replaceAll(&quot;\\\\&quot;, &quot;\\\\\\\\&quot;); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;File fileout = new File(sOutput); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;FileWriter fileWriter = new FileWriter(fileout); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;// 按行读取测试组件列表的路径<br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;while ((sTSFilePath = bufferedReader.readLine()) != null) { <br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;// 按照测试组件路径读取测试组件的内容<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;File tsfile = new File(sTSFilePath); <br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;FileReader tsfileReader = new FileReader(tsfile); <br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;BufferedReader tsbufferedReader = new BufferedReader(tsfileReader); <br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;StringBuffer tsstringBuffer = new StringBuffer(); <br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;// 读取测试组件中的测试脚本信息并保存到字符串 sContent <br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;while (( stemp = tsbufferedReader.readLine()) != null) { <br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;if (stemp.endsWith(&quot;&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&quot;)) { <br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sContent = sContent + stemp + &quot;\n&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;stemp = &quot;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;} <br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;} <br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;tsfileReader.close(); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;} <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;// 生成合并后的测试组件的内容 , 其中 sContent 包含全部要运行的测试脚本信息<br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + &quot;&lt;!DOCTYPE html PUBLIC \&quot;-//W3C//DTD XHTML 1.0 Strict//EN <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;\&quot; \&quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\&quot;&gt;&quot; ( <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<a href="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd/%27%3E%27" target="_blank">http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd/%27%3E%27</a>) ; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + &quot;&lt;html xmlns=\<a href="http://www.w3.org/1999/xhtml" target="_blank">http://www.w3.org/1999/xhtml</a>\ xml:lang=\&quot;en <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;\&quot; lang=\&quot;en\&quot;&gt;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + &quot;&lt;head&gt;&quot;; <br />
+&nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + &quot;&nbsp;&nbsp;&lt;meta content=\&quot;text/html; charset=UTF-8\&quot; http-equiv=\<br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &quot;content-type\&quot; /&gt;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + &quot;&nbsp;&nbsp;&lt;title&gt;Test Suite&lt;/title&gt;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + &quot;&lt;/head&gt;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + &quot;&lt;body&gt;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + &quot;&lt;table id=\&quot;suiteTable\&quot; cellpadding=\&quot;1\&quot; cellspacing=\ <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &quot;1\&quot; border=\&quot;1\&quot; class=\&quot;selenium\&quot;&gt;&lt;tbody&gt;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + &quot;&lt;tr&gt;&lt;td&gt;&lt;b<br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&gt;Test Suite&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + sContent; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + &quot;&lt;/tbody&gt;&lt;/table&gt;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + &quot;&lt;/body&gt;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;sHTML = sHTML + &quot;\n&quot; + &quot;&lt;/html&gt;&quot;; <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;// 将生成的内容写入到合并后的测试组件中<br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;fileWriter.write(sHTML); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;fileWriter.flush(); <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;fileWriter.close(); <br />
+&nbsp; &nbsp;} <br />
+&nbsp; &nbsp;catch (IOException e) { <br />
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; e.printStackTrace(); <br />
+&nbsp; &nbsp;} <br />
+ } <br />
+ } <br />
+<br />
+使用该工具前可以挑选出要运行的测试组件并在 OutputFile.config 中指定好合并后的测试组件的路径。之后，利用如下命令把要运行的测试组件文件列表添加到 TSList.config 文件中，并运行该工具来产生新的测试组件。<br />
+ dir *.html /OE /b &gt; TSList.config <br />
+ java SeleniumTSConfiger </td></tr></table>
+</div>
+<div id="comment_21408994" class="cm">
+</div>
+    <!--//ITPUB JOB 自定义钩子-->
+        
+    <div id="post_rate_div_21408994"></div>
+</div></div>
+
+</td></tr>
+<tr><td class="plc plm" style="background-color:#F1F1F1">
+<!--//ITPUB 此处去掉DZ自带相关帖子代码-->
+        
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 start-->
+                 
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 end-->
+ 
+        <!--//ITPUB 是否显示签名 -->
+                                	<div style="height:2px;"><span style=" border-bottom:1px solid #000; width:230px; float:left; height:1px;"></span></div>
+                <div class="sign" style="max-height:5760px;maxHeightIE:5760px;"><font size="4"><strong>-----孰能浊以静之徐清&nbsp;&nbsp;孰能安以动之徐生-----&nbsp;&nbsp;<br />
+</strong></font><br />
+ －－－－－－－－－－－－－－－－ <br />
+Karaf+Aries+blueprint 研究中...<br />
+Open Stack 研究中... <br />
+OpenDayLight/NFV 研究中... <br />
+OPENCL + Spark+ Hadoop 研究中... <br />
+<br />
+<br />
+<a href="http://weibo.com/2208646772?s=6uyXnP" target="_blank"><img src="http://service.t.sina.com.cn/widget/qmd/2208646772/9f7f6304/1.png" onload="thumbImg(this)" alt="" /></a></div>
+                            <!--//ITPUB 是否显示签名-->
+        
+        <!--//ITPUB 看了又看,显示在帖子的一楼,浏览数大于30-->
+        </td>
+</tr>
+<tr>
+<td class="pls" style="background-color:#F1F1F1"></td>
+<td class="plc" style="background-color:#F1F1F1">
+<div class="po">
+<div class="pob cl">
+                
+                <p>
+<a href="javascript:;" id="mgc_post_21408994" onmouseover="showMenu(this.id)" class="showmenu">使用道具</a>
+<a href="javascript:;" onclick="showWindow('miscreport21408994', 'misc.php?mod=report&rtype=post&rid=21408994&tid=1783925&fid=76', 'get', -1);return false;">举报</a>
+</p>
+                
+<em>
+                
+                    
+                                        
+                    <!--//EDIT ITPUB_BOCAI 注释掉推送按钮-->
+                    
+</em>
+
+<ul id="mgc_post_21408994_menu" class="p_pop mgcmn" style="display: none;">
+<li><a href="home.php?mod=magic&amp;mid=namepost&amp;idtype=pid&amp;id=21408994:1783925" id="a_namepost_21408994" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/namepost.small.gif" />显身卡</a><li>
+</ul>
+<script type="text/javascript" reload="1">checkmgcmn('post_21408994')</script>
+</div>
+</div>
+        
+        <!--//ITPUB 增加CU文字链 start by caojingfei at 2012.03.21-->
+                <!--//ITPUB 增加CU文字链 end by caojingfei at 2012.03.21-->
+
+</td>
+</tr>
+<tr class="ad">
+<td class="pls" style=" background-color:#FFFFFF;height:3px;"></td>
+<td class="plc" style=" background-color:#FFFFFF;height:3px">
+</td>
+</tr>
+</table>
+</div><div id="post_21408993" style="background-color:#F1F1F1; padding-bottom:0px">
+<table id="pid21408993" summary="pid21408993" cellspacing="0" cellpadding="0">
+<tr>
+<td class="pls" rowspan="2" style=" background-color:#DFDFDF">
+ <div class="pi">
+<div class="authi"><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xw1">Sky-Tiger</a>
+
+ </div>
+
+</div>
+<div class="p_pop blk bui" id="userinfo21408993" style="display: none; margin-top: -11px;">
+<div class="m z">
+<div id="userinfo21408993_ma"></div>
+</div>
+<div class="i y">
+<div>
+<strong><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xi2">Sky-Tiger</a></strong>
+<em>当前离线</em>
+</div>
+<dl class="cl"><dt>UID</dt><dd>71047</dd><dt>帖子</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=reply&view=me&from=space" target="_blank" class="xi2">206098</a></dd><dt>阅读权限</dt><dd>100</dd><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>技术排名</dt><dd>1 </dd><dt>专家积分</dt><dd>795 </dd><dt>社区排名</dt><dd>4 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>
+<div class="imicn">
+<a href="home.php?mod=space&amp;uid=71047&amp;do=profile" target="_blank" title="查看详细资料"><img src="http://itpub.img168.net/static/image/common/userinfo.gif" alt="查看详细资料" /></a>
+<a href="home.php?mod=magic&amp;mid=showip&amp;idtype=user&amp;id=Sky-Tiger" id="a_showip_li_21408993" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/showip.small.gif" alt="" /> IP卡</a>
+<a href="home.php?mod=magic&amp;mid=checkonline&amp;idtype=user&amp;id=Sky-Tiger" id="a_repent_21408993" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/checkonline.small.gif" alt="" /> 狗仔卡</a>
+</div>
+<div id="avatarfeed"><span id="threadsortswait"></span></div>
+</div>
+</div>
+<div>
+            
+            <!--//ITPUB 是否屏蔽用户头像 -->
+                                                <div class="avatar" onmouseover="showauthor(this, 'userinfo21408993')"><a href="home.php?mod=space&amp;uid=71047" target="_blank"><img src="http://passport.ixpub.net/data/avatar/000/07/10/47_avatar_middle.jpg"   onerror="this.onerror=null;this.src='static/image/common/noavatar_middle.gif'" /></a></div>
+                                        <!--//ITPUB 是否屏蔽用户头像-->
+            
+<p><em><a href="home.php?mod=spacecp&amp;ac=usergroup&amp;gid=34" target="_blank">版主</a></em></p>
+<p class="xg1">天王盖地虎</p></div>
+<p></p>
+<dl class="pil cl"><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>专家积分</dt><dd>795 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>            <dl class="pil cl"><dt>论坛徽章:</dt><dd>227</dd></dl><div style="padding:3px; margin-left:5px; margin-right:5px;"><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/></div>            
+<ul class="xl xl2 o cl">
+<!--<li class="callon"><a href="home.php?mod=space&amp;uid=71047" target="_blank" title="串个门" class="xi2">串个门</a></li>-->
+<li class="buddy"><a href="home.php?mod=spacecp&amp;ac=friend&amp;op=add&amp;uid=71047&amp;handlekey=addfriendhk_71047" id="a_friend_li_21408993" onclick="showWindow(this.id, this.href, 'get', 1, {'ctrlid':this.id,'pos':'00'});" title="加好友" class="xi2">加好友</a></li>
+<!--<li class="poke2"><a href="home.php?mod=spacecp&amp;ac=poke&amp;op=send&amp;uid=71047" id="a_poke_li_21408993" onclick="showWindow(this.id, this.href, 'get', 0);" title="打招呼" class="xi2">打招呼</a></li>-->
+<li class="pm2"><a href="home.php?mod=spacecp&amp;ac=pm&amp;op=showmsg&amp;handlekey=showmsg_71047&amp;touid=71047&amp;pmid=0&amp;daterange=2&amp;pid=21408993&amp;tid=1783925" onclick="showWindow('sendpm', this.href);" title="发消息" class="xi2">发消息</a></li>
+</ul>
+</td>
+<td class="plc" style=" background-color:#DFDFDF">
+<div class="pi">
+<strong>
+<a href="forum.php?mod=redirect&goto=findpost&ptid=1783925&pid=21408993" id="postnum21408993" onclick="setCopy(this.href, '帖子地址复制成功');return false;"><em>7</em><sup>#</sup></a>
+</strong>
+<div class="pti">
+<div class="pdbt">
+</div>
+<div class="authi">
+<img class="authicn vm" id="authicon21408993" src="static/image/common/online_moderator.gif" />
+<em id="authorposton21408993">发表于 2013-5-15 20:56:08</em>
+<span class="pipe">|</span><a href="forum.php?mod=viewthread&amp;tid=1783925&amp;page=1&amp;authorid=71047" rel="nofollow">只看该作者</a>
+              
+                
+</div>
+</div>
+</div><div class="pct"><div class="pcb">
+<div class="t_fsz">
+<table cellspacing="0" cellpadding="0"><tr><td class="t_f" id="postmessage_21408993">
+分析产品特点和测试关注点，搭建测试的基本架构<br />
+针对不同的产品特点和测试关注点，需要提前规划好测试框架，决定测试脚本的粒度和如何拆分可复用的测试脚本。例如某产品的登录过程比较复杂，需要经过 20 步基本操作才可以进入产品主页面，而翻译验证测的关注点集中在登录到主页面后的用户界面，那么登录过程完全可以整体单独作为一个测试脚本划分出来。另一个例子，进入某个表单界面，表单中某个下拉菜单的每个选项的选择都会引起界面翻译的变化，而翻译验证测需要验证的测试点正是变化的界面上的翻译，因此，我们需要为每个选项的选取都单独分离为一个测试脚本。<br />
+通过上面的分析，结合产品和测试的相关文档，可以初步形成测试的基本架构，为之后的自动化测试脚本创建提供方便。在这个阶段，也可以先建立好不同功能的测试脚本会被保存在其中的文件夹。图 4 给出了和测试基本架构对应的文件结构。<br />
+下面本文将对 Selenium IDE 的优缺点以及相关的一些扩展应用进行分析和介绍。通过将翻译验证测试和 Selenium IDE 结合，可以快速完成在英文产品上对需要测试的新功能或者变化功能进行脚本录制和修改工作，生成和界面语言无关的自动化测试脚本，再等翻译进入产品后，在各个语言的产品上运行自动化测试进行截图。即便有功能的变化，也可以快速重新录制和修改脚本。应用 Selenium IDE 可以快速方便地录制及回放脚本。此外，Selenium IDE 具有操作简单，功能强大等优点。但是 Selenium IDE 有其自身的一些弱点，如 Selenium IDE 录制时所找到的元素的 Xpath 不一定可以稳定复现，可能随页面的改变而变化。用户需要使用其他的元素属性修改其 Xpath 。Selenium IDE 对于 JavaScript 实现的右键菜单的支持也不是十分稳定。最后，Selenium IDE 对弹出窗口、上传、下载等浏览器功能支持的并不好，常常需要借助第三方工具包。但从整体上而言，在翻译验证测试中引入 Selenium IDE 的快速高效可复用的自动化测试仍然是十分必要的。<br />
+Selenium IDE 一次只能运行一个测试组件，而翻译验证测试的截图工作需要运行多个测试组件才能完成。分析 Selenium IDE 生成的测试组件的 html 文件我们可以发现其主要内容就是包含测试脚本所在路径的链接的表格。通过这一分析，我们可以实现一个小工具读取需要运行的测试组件中的测试脚本的信息，然后进行合并生成一个新的测试组件，利用该测试组件一次运行所有需要截图的测试组件。清单 1 显示了该工具的主要代码</td></tr></table>
+</div>
+<div id="comment_21408993" class="cm">
+</div>
+    <!--//ITPUB JOB 自定义钩子-->
+        
+    <div id="post_rate_div_21408993"></div>
+</div></div>
+
+</td></tr>
+<tr><td class="plc plm" style=" background-color:#DFDFDF">
+<!--//ITPUB 此处去掉DZ自带相关帖子代码-->
+        
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 start-->
+                 
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 end-->
+ 
+        <!--//ITPUB 是否显示签名 -->
+                                	<div style="height:2px;"><span style=" border-bottom:1px solid #000; width:230px; float:left; height:1px;"></span></div>
+                <div class="sign" style="max-height:5760px;maxHeightIE:5760px;"><font size="4"><strong>-----孰能浊以静之徐清&nbsp;&nbsp;孰能安以动之徐生-----&nbsp;&nbsp;<br />
+</strong></font><br />
+ －－－－－－－－－－－－－－－－ <br />
+Karaf+Aries+blueprint 研究中...<br />
+Open Stack 研究中... <br />
+OpenDayLight/NFV 研究中... <br />
+OPENCL + Spark+ Hadoop 研究中... <br />
+<br />
+<br />
+<a href="http://weibo.com/2208646772?s=6uyXnP" target="_blank"><img src="http://service.t.sina.com.cn/widget/qmd/2208646772/9f7f6304/1.png" onload="thumbImg(this)" alt="" /></a></div>
+                            <!--//ITPUB 是否显示签名-->
+        
+        <!--//ITPUB 看了又看,显示在帖子的一楼,浏览数大于30-->
+        </td>
+</tr>
+<tr>
+<td class="pls" style=" background-color:#DFDFDF"></td>
+<td class="plc" style=" background-color:#DFDFDF">
+<div class="po">
+<div class="pob cl">
+                
+                <p>
+<a href="javascript:;" id="mgc_post_21408993" onmouseover="showMenu(this.id)" class="showmenu">使用道具</a>
+<a href="javascript:;" onclick="showWindow('miscreport21408993', 'misc.php?mod=report&rtype=post&rid=21408993&tid=1783925&fid=76', 'get', -1);return false;">举报</a>
+</p>
+                
+<em>
+                
+                    
+                                        
+                    <!--//EDIT ITPUB_BOCAI 注释掉推送按钮-->
+                    
+</em>
+
+<ul id="mgc_post_21408993_menu" class="p_pop mgcmn" style="display: none;">
+<li><a href="home.php?mod=magic&amp;mid=namepost&amp;idtype=pid&amp;id=21408993:1783925" id="a_namepost_21408993" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/namepost.small.gif" />显身卡</a><li>
+</ul>
+<script type="text/javascript" reload="1">checkmgcmn('post_21408993')</script>
+</div>
+</div>
+        
+        <!--//ITPUB 增加CU文字链 start by caojingfei at 2012.03.21-->
+                <!--//ITPUB 增加CU文字链 end by caojingfei at 2012.03.21-->
+
+</td>
+</tr>
+<tr class="ad">
+<td class="pls" style=" background-color:#FFFFFF;height:3px;"></td>
+<td class="plc" style=" background-color:#FFFFFF;height:3px">
+</td>
+</tr>
+</table>
+</div><div id="post_21408991" style=" background-color:#DFDFDF;margin-bottom:0px">
+<table id="pid21408991" summary="pid21408991" cellspacing="0" cellpadding="0">
+<tr>
+<td class="pls" rowspan="2" style="background-color:#F1F1F1">
+ <div class="pi">
+<div class="authi"><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xw1">Sky-Tiger</a>
+
+ </div>
+
+</div>
+<div class="p_pop blk bui" id="userinfo21408991" style="display: none; margin-top: -11px;">
+<div class="m z">
+<div id="userinfo21408991_ma"></div>
+</div>
+<div class="i y">
+<div>
+<strong><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xi2">Sky-Tiger</a></strong>
+<em>当前离线</em>
+</div>
+<dl class="cl"><dt>UID</dt><dd>71047</dd><dt>帖子</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=reply&view=me&from=space" target="_blank" class="xi2">206098</a></dd><dt>阅读权限</dt><dd>100</dd><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>技术排名</dt><dd>1 </dd><dt>专家积分</dt><dd>795 </dd><dt>社区排名</dt><dd>4 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>
+<div class="imicn">
+<a href="home.php?mod=space&amp;uid=71047&amp;do=profile" target="_blank" title="查看详细资料"><img src="http://itpub.img168.net/static/image/common/userinfo.gif" alt="查看详细资料" /></a>
+<a href="home.php?mod=magic&amp;mid=showip&amp;idtype=user&amp;id=Sky-Tiger" id="a_showip_li_21408991" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/showip.small.gif" alt="" /> IP卡</a>
+<a href="home.php?mod=magic&amp;mid=checkonline&amp;idtype=user&amp;id=Sky-Tiger" id="a_repent_21408991" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/checkonline.small.gif" alt="" /> 狗仔卡</a>
+</div>
+<div id="avatarfeed"><span id="threadsortswait"></span></div>
+</div>
+</div>
+<div>
+            
+            <!--//ITPUB 是否屏蔽用户头像 -->
+                                                <div class="avatar" onmouseover="showauthor(this, 'userinfo21408991')"><a href="home.php?mod=space&amp;uid=71047" target="_blank"><img src="http://passport.ixpub.net/data/avatar/000/07/10/47_avatar_middle.jpg"   onerror="this.onerror=null;this.src='static/image/common/noavatar_middle.gif'" /></a></div>
+                                        <!--//ITPUB 是否屏蔽用户头像-->
+            
+<p><em><a href="home.php?mod=spacecp&amp;ac=usergroup&amp;gid=34" target="_blank">版主</a></em></p>
+<p class="xg1">天王盖地虎</p></div>
+<p></p>
+<dl class="pil cl"><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>专家积分</dt><dd>795 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>            <dl class="pil cl"><dt>论坛徽章:</dt><dd>227</dd></dl><div style="padding:3px; margin-left:5px; margin-right:5px;"><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/></div>            
+<ul class="xl xl2 o cl">
+<!--<li class="callon"><a href="home.php?mod=space&amp;uid=71047" target="_blank" title="串个门" class="xi2">串个门</a></li>-->
+<li class="buddy"><a href="home.php?mod=spacecp&amp;ac=friend&amp;op=add&amp;uid=71047&amp;handlekey=addfriendhk_71047" id="a_friend_li_21408991" onclick="showWindow(this.id, this.href, 'get', 1, {'ctrlid':this.id,'pos':'00'});" title="加好友" class="xi2">加好友</a></li>
+<!--<li class="poke2"><a href="home.php?mod=spacecp&amp;ac=poke&amp;op=send&amp;uid=71047" id="a_poke_li_21408991" onclick="showWindow(this.id, this.href, 'get', 0);" title="打招呼" class="xi2">打招呼</a></li>-->
+<li class="pm2"><a href="home.php?mod=spacecp&amp;ac=pm&amp;op=showmsg&amp;handlekey=showmsg_71047&amp;touid=71047&amp;pmid=0&amp;daterange=2&amp;pid=21408991&amp;tid=1783925" onclick="showWindow('sendpm', this.href);" title="发消息" class="xi2">发消息</a></li>
+</ul>
+</td>
+<td class="plc" style="background-color:#F1F1F1">
+<div class="pi">
+<strong>
+<a href="forum.php?mod=redirect&goto=findpost&ptid=1783925&pid=21408991" id="postnum21408991" onclick="setCopy(this.href, '帖子地址复制成功');return false;"><em>6</em><sup>#</sup></a>
+</strong>
+<div class="pti">
+<div class="pdbt">
+</div>
+<div class="authi">
+<img class="authicn vm" id="authicon21408991" src="static/image/common/online_moderator.gif" />
+<em id="authorposton21408991">发表于 2013-5-15 20:55:49</em>
+<span class="pipe">|</span><a href="forum.php?mod=viewthread&amp;tid=1783925&amp;page=1&amp;authorid=71047" rel="nofollow">只看该作者</a>
+              
+                
+</div>
+</div>
+</div><div class="pct"><div class="pcb">
+<div class="t_fsz">
+<table cellspacing="0" cellpadding="0"><tr><td class="t_f" id="postmessage_21408991">
+翻译验证测试是指在产品集成翻译文件之后，由专业的翻译人员检查翻译在产品的上下文语境中是否准确，是否能方便最终用户的理解和使用。考虑到翻译人员产品操作的熟练程度和成本等原因，通常是由产品部门提供语言的截图给翻译人员进行检查。软件产品的翻译验证测试对提高语言用户的满意度和更好的将产品推向国际市场具有十分重要的意义。然而由于以下原因，翻译验证测试的截图工作通常不太容易进行自动化操作：<br />
+为了尽快的发布产品，翻译进入产品到产品最终发布的时间间隔通常被安排的很短，限制了翻译验证测试的自动化脚本准备和执行的时间；<br />
+基于语言产品的自动化脚本通常需要依赖已经存在的翻译，而这些翻译在每个版本中都可能变化，大大增加了自动化脚本执行的不稳定性；<br />
+翻译验证测试重点关注新功能或者变化的功能，这些功能本身就不稳定，为它们准备自动化脚本，会增加修改和维护的成本；<br />
+同样由于翻译验证测试重点关注新功能或者变化的功能，之前准备好的已有功能的自动化脚本不容易被复用；<br />
+从上面的介绍我们可以看到，为翻译验证测试准备功能强大的自动化测试并不合适。然而，翻译验测试又需要在多个语言（通常至少是 20 多个语言）上重复进行，这些测试的步骤相同，急需自动化的方法提高效率。那么是否有轻量级的自动化方法能够被运用于翻译验证测试呢？对于基于 Web 的应用程序而言，答案是肯定的。良好测试框架结合 Selenium IDE 脚本就可以轻松实现这一目标。</td></tr></table>
+</div>
+<div id="comment_21408991" class="cm">
+</div>
+    <!--//ITPUB JOB 自定义钩子-->
+        
+    <div id="post_rate_div_21408991"></div>
+</div></div>
+
+</td></tr>
+<tr><td class="plc plm" style="background-color:#F1F1F1">
+<!--//ITPUB 此处去掉DZ自带相关帖子代码-->
+        
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 start-->
+                 
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 end-->
+ 
+        <!--//ITPUB 是否显示签名 -->
+                                	<div style="height:2px;"><span style=" border-bottom:1px solid #000; width:230px; float:left; height:1px;"></span></div>
+                <div class="sign" style="max-height:5760px;maxHeightIE:5760px;"><font size="4"><strong>-----孰能浊以静之徐清&nbsp;&nbsp;孰能安以动之徐生-----&nbsp;&nbsp;<br />
+</strong></font><br />
+ －－－－－－－－－－－－－－－－ <br />
+Karaf+Aries+blueprint 研究中...<br />
+Open Stack 研究中... <br />
+OpenDayLight/NFV 研究中... <br />
+OPENCL + Spark+ Hadoop 研究中... <br />
+<br />
+<br />
+<a href="http://weibo.com/2208646772?s=6uyXnP" target="_blank"><img src="http://service.t.sina.com.cn/widget/qmd/2208646772/9f7f6304/1.png" onload="thumbImg(this)" alt="" /></a></div>
+                            <!--//ITPUB 是否显示签名-->
+        
+        <!--//ITPUB 看了又看,显示在帖子的一楼,浏览数大于30-->
+        </td>
+</tr>
+<tr>
+<td class="pls" style="background-color:#F1F1F1"></td>
+<td class="plc" style="background-color:#F1F1F1">
+<div class="po">
+<div class="pob cl">
+                
+                <p>
+<a href="javascript:;" id="mgc_post_21408991" onmouseover="showMenu(this.id)" class="showmenu">使用道具</a>
+<a href="javascript:;" onclick="showWindow('miscreport21408991', 'misc.php?mod=report&rtype=post&rid=21408991&tid=1783925&fid=76', 'get', -1);return false;">举报</a>
+</p>
+                
+<em>
+                
+                    
+                                        
+                    <!--//EDIT ITPUB_BOCAI 注释掉推送按钮-->
+                    
+</em>
+
+<ul id="mgc_post_21408991_menu" class="p_pop mgcmn" style="display: none;">
+<li><a href="home.php?mod=magic&amp;mid=namepost&amp;idtype=pid&amp;id=21408991:1783925" id="a_namepost_21408991" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/namepost.small.gif" />显身卡</a><li>
+</ul>
+<script type="text/javascript" reload="1">checkmgcmn('post_21408991')</script>
+</div>
+</div>
+        
+        <!--//ITPUB 增加CU文字链 start by caojingfei at 2012.03.21-->
+                <!--//ITPUB 增加CU文字链 end by caojingfei at 2012.03.21-->
+
+</td>
+</tr>
+<tr class="ad">
+<td class="pls" style=" background-color:#FFFFFF;height:3px;"></td>
+<td class="plc" style=" background-color:#FFFFFF;height:3px">
+</td>
+</tr>
+</table>
+</div><div id="post_21344521" style="background-color:#F1F1F1; padding-bottom:0px">
+<table id="pid21344521" summary="pid21344521" cellspacing="0" cellpadding="0">
+<tr>
+<td class="pls" rowspan="2" style=" background-color:#DFDFDF">
+ <div class="pi">
+<div class="authi"><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xw1">Sky-Tiger</a>
+
+ </div>
+
+</div>
+<div class="p_pop blk bui" id="userinfo21344521" style="display: none; margin-top: -11px;">
+<div class="m z">
+<div id="userinfo21344521_ma"></div>
+</div>
+<div class="i y">
+<div>
+<strong><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xi2">Sky-Tiger</a></strong>
+<em>当前离线</em>
+</div>
+<dl class="cl"><dt>UID</dt><dd>71047</dd><dt>帖子</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=reply&view=me&from=space" target="_blank" class="xi2">206098</a></dd><dt>阅读权限</dt><dd>100</dd><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>技术排名</dt><dd>1 </dd><dt>专家积分</dt><dd>795 </dd><dt>社区排名</dt><dd>4 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>
+<div class="imicn">
+<a href="home.php?mod=space&amp;uid=71047&amp;do=profile" target="_blank" title="查看详细资料"><img src="http://itpub.img168.net/static/image/common/userinfo.gif" alt="查看详细资料" /></a>
+<a href="home.php?mod=magic&amp;mid=showip&amp;idtype=user&amp;id=Sky-Tiger" id="a_showip_li_21344521" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/showip.small.gif" alt="" /> IP卡</a>
+<a href="home.php?mod=magic&amp;mid=checkonline&amp;idtype=user&amp;id=Sky-Tiger" id="a_repent_21344521" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/checkonline.small.gif" alt="" /> 狗仔卡</a>
+</div>
+<div id="avatarfeed"><span id="threadsortswait"></span></div>
+</div>
+</div>
+<div>
+            
+            <!--//ITPUB 是否屏蔽用户头像 -->
+                                                <div class="avatar" onmouseover="showauthor(this, 'userinfo21344521')"><a href="home.php?mod=space&amp;uid=71047" target="_blank"><img src="http://passport.ixpub.net/data/avatar/000/07/10/47_avatar_middle.jpg"   onerror="this.onerror=null;this.src='static/image/common/noavatar_middle.gif'" /></a></div>
+                                        <!--//ITPUB 是否屏蔽用户头像-->
+            
+<p><em><a href="home.php?mod=spacecp&amp;ac=usergroup&amp;gid=34" target="_blank">版主</a></em></p>
+<p class="xg1">天王盖地虎</p></div>
+<p></p>
+<dl class="pil cl"><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>专家积分</dt><dd>795 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>            <dl class="pil cl"><dt>论坛徽章:</dt><dd>227</dd></dl><div style="padding:3px; margin-left:5px; margin-right:5px;"><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/></div>            
+<ul class="xl xl2 o cl">
+<!--<li class="callon"><a href="home.php?mod=space&amp;uid=71047" target="_blank" title="串个门" class="xi2">串个门</a></li>-->
+<li class="buddy"><a href="home.php?mod=spacecp&amp;ac=friend&amp;op=add&amp;uid=71047&amp;handlekey=addfriendhk_71047" id="a_friend_li_21344521" onclick="showWindow(this.id, this.href, 'get', 1, {'ctrlid':this.id,'pos':'00'});" title="加好友" class="xi2">加好友</a></li>
+<!--<li class="poke2"><a href="home.php?mod=spacecp&amp;ac=poke&amp;op=send&amp;uid=71047" id="a_poke_li_21344521" onclick="showWindow(this.id, this.href, 'get', 0);" title="打招呼" class="xi2">打招呼</a></li>-->
+<li class="pm2"><a href="home.php?mod=spacecp&amp;ac=pm&amp;op=showmsg&amp;handlekey=showmsg_71047&amp;touid=71047&amp;pmid=0&amp;daterange=2&amp;pid=21344521&amp;tid=1783925" onclick="showWindow('sendpm', this.href);" title="发消息" class="xi2">发消息</a></li>
+</ul>
+</td>
+<td class="plc" style=" background-color:#DFDFDF">
+<div class="pi">
+<strong>
+<a href="forum.php?mod=redirect&goto=findpost&ptid=1783925&pid=21344521" id="postnum21344521" onclick="setCopy(this.href, '帖子地址复制成功');return false;"><em>5</em><sup>#</sup></a>
+</strong>
+<div class="pti">
+<div class="pdbt">
+</div>
+<div class="authi">
+<img class="authicn vm" id="authicon21344521" src="static/image/common/online_moderator.gif" />
+<em id="authorposton21344521">发表于 2013-4-26 20:46:23</em>
+<span class="pipe">|</span><a href="forum.php?mod=viewthread&amp;tid=1783925&amp;page=1&amp;authorid=71047" rel="nofollow">只看该作者</a>
+              
+                
+</div>
+</div>
+</div><div class="pct"><div class="pcb">
+<div class="t_fsz">
+<table cellspacing="0" cellpadding="0"><tr><td class="t_f" id="postmessage_21344521">
+<p align="left"><font style="color:rgb(0, 0, 0)"><font face="arial, nsimsun, sans-serif">[size=0.76em]针对设计模式的优化</font></font></font></p><p align="left"><font style="color:rgb(0, 0, 0)"><font face="arial, nsimsun, sans-serif">[size=0.76em]<strong>使用 DAO 模式抽象出数据访问层。</strong>原来的代码中混杂着 JDBC 操作数据库的代码，代码结构显得十分凌乱。使用 DAO 模式（Data Access Object Pattern）可以抽象出数据访问层，这样使得程序可以独立于不同的数据库，即便访问数据库的代码发生了改变，上层调用数据访问的代码无需改变。并且程序员可以摆脱单调繁琐的数据库代码的编写，专注于业务逻辑层面的代码的开发。通过上述的优化之后，性能并未有提升，但是代码的可读性、可扩展性大大地提高了。</font></font></font></p><br />
+<strong>图 2. DAO 模式的层次结构</strong><br />
+<img width="118" height="194" file="http://www.ibm.com/developerworks/cn/java/j-lo-codeoptimize/image003.jpg" border="0" alt="" /><font color="#000"> </font><br />
+<br />
+<strong>清单 6. 使用 DAO 模式的代码片段</strong><br />
+<table cellspacing="0" class="t_table" style="width:98%"><tr><td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;// DeviceDAO.java，定义了 DAO 抽象，上层的业务逻辑代码引用该接口，面向接口编程 public interface DeviceDAO {&nbsp; &nbsp;&nbsp;&nbsp;public void add(Device device);&nbsp;&nbsp;}&nbsp;&nbsp;// DeviceDAOImpl.java，DAO 实现，具体的 SQL 语句和数据库操作由该类实现 public class DeviceDAOImpl implements DeviceDAO {&nbsp; &nbsp;&nbsp;&nbsp;private Connection con;&nbsp; &nbsp;&nbsp;&nbsp;public DeviceDAOImpl() {&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// 获得数据库连接，代码略去&nbsp; &nbsp; }&nbsp;&nbsp;@Override&nbsp;&nbsp;public void add(Device device) {&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;// 使用 PreparedStatement 进行数据库插入记录操作，代码略去&nbsp; &nbsp; }&nbsp;&nbsp;} </td></tr></table><br />
+<p align="left"><font style="color:rgb(0, 0, 0)"><font face="arial, nsimsun, sans-serif">[size=0.76em]回顾以上代码优化过程：关闭日志记录、共享数据库连接、使用预编译 SQL、使用 SQL 批处理、使用多线程实现并发 / 并行、使用 DAO 模式抽象出数据访问层，程序运行时间从最初的 100 秒左右降低到 15 秒以下，在性能上得到了很大的提升，同时也具有了更好的可读性和可扩展性。</font></font></font></p><br />
+<br />
+</td></tr></table>
+</div>
+<div id="comment_21344521" class="cm">
+</div>
+    <!--//ITPUB JOB 自定义钩子-->
+        
+    <div id="post_rate_div_21344521"></div>
+</div></div>
+
+</td></tr>
+<tr><td class="plc plm" style=" background-color:#DFDFDF">
+<!--//ITPUB 此处去掉DZ自带相关帖子代码-->
+        
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 start-->
+                 
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 end-->
+ 
+        <!--//ITPUB 是否显示签名 -->
+                                	<div style="height:2px;"><span style=" border-bottom:1px solid #000; width:230px; float:left; height:1px;"></span></div>
+                <div class="sign" style="max-height:5760px;maxHeightIE:5760px;"><font size="4"><strong>-----孰能浊以静之徐清&nbsp;&nbsp;孰能安以动之徐生-----&nbsp;&nbsp;<br />
+</strong></font><br />
+ －－－－－－－－－－－－－－－－ <br />
+Karaf+Aries+blueprint 研究中...<br />
+Open Stack 研究中... <br />
+OpenDayLight/NFV 研究中... <br />
+OPENCL + Spark+ Hadoop 研究中... <br />
+<br />
+<br />
+<a href="http://weibo.com/2208646772?s=6uyXnP" target="_blank"><img src="http://service.t.sina.com.cn/widget/qmd/2208646772/9f7f6304/1.png" onload="thumbImg(this)" alt="" /></a></div>
+                            <!--//ITPUB 是否显示签名-->
+        
+        <!--//ITPUB 看了又看,显示在帖子的一楼,浏览数大于30-->
+        </td>
+</tr>
+<tr>
+<td class="pls" style=" background-color:#DFDFDF"></td>
+<td class="plc" style=" background-color:#DFDFDF">
+<div class="po">
+<div class="pob cl">
+                
+                <p>
+<a href="javascript:;" id="mgc_post_21344521" onmouseover="showMenu(this.id)" class="showmenu">使用道具</a>
+<a href="javascript:;" onclick="showWindow('miscreport21344521', 'misc.php?mod=report&rtype=post&rid=21344521&tid=1783925&fid=76', 'get', -1);return false;">举报</a>
+</p>
+                
+<em>
+                
+                    
+                                        
+                    <!--//EDIT ITPUB_BOCAI 注释掉推送按钮-->
+                    
+</em>
+
+<ul id="mgc_post_21344521_menu" class="p_pop mgcmn" style="display: none;">
+<li><a href="home.php?mod=magic&amp;mid=namepost&amp;idtype=pid&amp;id=21344521:1783925" id="a_namepost_21344521" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/namepost.small.gif" />显身卡</a><li>
+</ul>
+<script type="text/javascript" reload="1">checkmgcmn('post_21344521')</script>
+</div>
+</div>
+        
+        <!--//ITPUB 增加CU文字链 start by caojingfei at 2012.03.21-->
+                <!--//ITPUB 增加CU文字链 end by caojingfei at 2012.03.21-->
+
+</td>
+</tr>
+<tr class="ad">
+<td class="pls" style=" background-color:#FFFFFF;height:3px;"></td>
+<td class="plc" style=" background-color:#FFFFFF;height:3px">
+</td>
+</tr>
+</table>
+</div><div id="post_21344520" style=" background-color:#DFDFDF;margin-bottom:0px">
+<table id="pid21344520" summary="pid21344520" cellspacing="0" cellpadding="0">
+<tr>
+<td class="pls" rowspan="2" style="background-color:#F1F1F1">
+ <div class="pi">
+<div class="authi"><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xw1">Sky-Tiger</a>
+
+ </div>
+
+</div>
+<div class="p_pop blk bui" id="userinfo21344520" style="display: none; margin-top: -11px;">
+<div class="m z">
+<div id="userinfo21344520_ma"></div>
+</div>
+<div class="i y">
+<div>
+<strong><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xi2">Sky-Tiger</a></strong>
+<em>当前离线</em>
+</div>
+<dl class="cl"><dt>UID</dt><dd>71047</dd><dt>帖子</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=reply&view=me&from=space" target="_blank" class="xi2">206098</a></dd><dt>阅读权限</dt><dd>100</dd><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>技术排名</dt><dd>1 </dd><dt>专家积分</dt><dd>795 </dd><dt>社区排名</dt><dd>4 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>
+<div class="imicn">
+<a href="home.php?mod=space&amp;uid=71047&amp;do=profile" target="_blank" title="查看详细资料"><img src="http://itpub.img168.net/static/image/common/userinfo.gif" alt="查看详细资料" /></a>
+<a href="home.php?mod=magic&amp;mid=showip&amp;idtype=user&amp;id=Sky-Tiger" id="a_showip_li_21344520" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/showip.small.gif" alt="" /> IP卡</a>
+<a href="home.php?mod=magic&amp;mid=checkonline&amp;idtype=user&amp;id=Sky-Tiger" id="a_repent_21344520" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/checkonline.small.gif" alt="" /> 狗仔卡</a>
+</div>
+<div id="avatarfeed"><span id="threadsortswait"></span></div>
+</div>
+</div>
+<div>
+            
+            <!--//ITPUB 是否屏蔽用户头像 -->
+                                                <div class="avatar" onmouseover="showauthor(this, 'userinfo21344520')"><a href="home.php?mod=space&amp;uid=71047" target="_blank"><img src="http://passport.ixpub.net/data/avatar/000/07/10/47_avatar_middle.jpg"   onerror="this.onerror=null;this.src='static/image/common/noavatar_middle.gif'" /></a></div>
+                                        <!--//ITPUB 是否屏蔽用户头像-->
+            
+<p><em><a href="home.php?mod=spacecp&amp;ac=usergroup&amp;gid=34" target="_blank">版主</a></em></p>
+<p class="xg1">天王盖地虎</p></div>
+<p></p>
+<dl class="pil cl"><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>专家积分</dt><dd>795 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>            <dl class="pil cl"><dt>论坛徽章:</dt><dd>227</dd></dl><div style="padding:3px; margin-left:5px; margin-right:5px;"><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/></div>            
+<ul class="xl xl2 o cl">
+<!--<li class="callon"><a href="home.php?mod=space&amp;uid=71047" target="_blank" title="串个门" class="xi2">串个门</a></li>-->
+<li class="buddy"><a href="home.php?mod=spacecp&amp;ac=friend&amp;op=add&amp;uid=71047&amp;handlekey=addfriendhk_71047" id="a_friend_li_21344520" onclick="showWindow(this.id, this.href, 'get', 1, {'ctrlid':this.id,'pos':'00'});" title="加好友" class="xi2">加好友</a></li>
+<!--<li class="poke2"><a href="home.php?mod=spacecp&amp;ac=poke&amp;op=send&amp;uid=71047" id="a_poke_li_21344520" onclick="showWindow(this.id, this.href, 'get', 0);" title="打招呼" class="xi2">打招呼</a></li>-->
+<li class="pm2"><a href="home.php?mod=spacecp&amp;ac=pm&amp;op=showmsg&amp;handlekey=showmsg_71047&amp;touid=71047&amp;pmid=0&amp;daterange=2&amp;pid=21344520&amp;tid=1783925" onclick="showWindow('sendpm', this.href);" title="发消息" class="xi2">发消息</a></li>
+</ul>
+</td>
+<td class="plc" style="background-color:#F1F1F1">
+<div class="pi">
+<strong>
+<a href="forum.php?mod=redirect&goto=findpost&ptid=1783925&pid=21344520" id="postnum21344520" onclick="setCopy(this.href, '帖子地址复制成功');return false;"><em>4</em><sup>#</sup></a>
+</strong>
+<div class="pti">
+<div class="pdbt">
+</div>
+<div class="authi">
+<img class="authicn vm" id="authicon21344520" src="static/image/common/online_moderator.gif" />
+<em id="authorposton21344520">发表于 2013-4-26 20:46:07</em>
+<span class="pipe">|</span><a href="forum.php?mod=viewthread&amp;tid=1783925&amp;page=1&amp;authorid=71047" rel="nofollow">只看该作者</a>
+              
+                
+</div>
+</div>
+</div><div class="pct"><div class="pcb">
+<div class="t_fsz">
+<table cellspacing="0" cellpadding="0"><tr><td class="t_f" id="postmessage_21344520">
+针对插入数据库记录的优化 1<br />
+使用预编译 SQL。具体做法是使用 java.sql.PreparedStatement 代替 java.sql.Statement 生成 SQL 语句。PreparedStatement 使得数据库预先编译好 SQL 语句，可以传入参数。而 Statement 生成的 SQL 语句在每次提交时，数据库都需进行编译。在执行大量类似的 SQL 语句时，可以使用 PreparedStatement 提高执行效率。使用 PreparedStatement 的另一个好处是不需要拼接 SQL 语句，代码的可读性更强。通过上述的优化之后，性能有了小幅度的提升，从 40 秒左右降到了 30~35 秒左右。<br />
+<br />
+清单 3. 使用 Statement 的代码片段<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;// 需要拼接 SQL 语句，执行效率不高，代码可读性不强<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;StringBuilder sql = new StringBuilder(); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;sql.append(&quot;insert into table1(column1,column2) values('&quot;); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;sql.append(column1Value); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;sql.append(&quot;','&quot;); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;sql.append(column2Value); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;sql.append(&quot;');&quot;); <br />
+<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;Statement st; <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;try { <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;st = con.createStatement(); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;st.executeUpdate(sql.toString()); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;} catch (SQLException e) { <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;e.printStackTrace(); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;} <br />
+<br />
+<br />
+清单 4. 使用 PreparedStatement 的代码片段<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;// 预编译 SQL 语句，执行效率高，可读性强<br />
+String sql = “insert into table1(column1,column2) values(?,?)”; <br />
+PreparedStatement pst = con.prepareStatement(sql); <br />
+pst.setString(1,column1Value); <br />
+pst.setString(2,column2Value); <br />
+pst.execute(); <br />
+<br />
+针对插入数据库记录的优化 2<br />
+使用 SQL 批处理。通过 java.sql.PreparedStatement 的 addBatch 方法将 SQL 语句加入到批处理，这样在调用 execute 方法时，就会一次性地执行 SQL 批处理，而不是逐条执行。通过上述的优化之后，性能有了小幅度的提升，从 30~35 秒左右降到了 30 秒左右。<br />
+针对多线程的优化<br />
+使用多线程实现并发 / 并行。清空数据库表的操作、把从 2 个外部系统 D 取得的数据插入数据库记录的操作，是相互独立的任务，可以给每个任务分配一个线程执行。清空数据库表的操作应该先于数据库插入操作完成，可以通过 java.lang.Thread 类的 join 方法控制线程执行的先后次序。在单核 CPU 时代，操作系统中某一时刻只有一个线程在运行，通过进程 / 线程调度，给每个线程分配一小段执行的时间片，可以实现多个进程 / 线程的并发（concurrent）执行。而在目前的多核多处理器背景下，操作系统中同一时刻可以有多个线程并行（parallel）执行，大大地提高了计算速度。<br />
+<br />
+清单 5. 使用多线程的代码片段<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;<br />
+Thread t0 = new Thread(new ClearTableTask()); <br />
+Thread t1 = new Thread(new StoreServersTask(ADDRESS1)); <br />
+Thread t2 = new Thread(new StoreServersTask(ADDRESS2)); <br />
+<br />
+try { <br />
+&nbsp; &nbsp; t0.start(); <br />
+&nbsp; &nbsp; // 执行完清空操作后，再进行后续操作<br />
+&nbsp; &nbsp; t0.join(); <br />
+&nbsp; &nbsp; t1.start(); <br />
+&nbsp; &nbsp; t2.start(); <br />
+&nbsp; &nbsp; t1.join(); <br />
+&nbsp; &nbsp; t2.join(); <br />
+} catch (InterruptedException e) { <br />
+&nbsp; &nbsp; e.printStackTrace(); <br />
+} <br />
+<br />
+// 断开数据库连接<br />
+try { <br />
+&nbsp; &nbsp; JdbcUtil.close(); <br />
+} catch (SQLException e) { <br />
+&nbsp; &nbsp; e.printStackTrace(); <br />
+} <br />
+<br />
+通过上述的优化之后，性能有了大幅度的提升，从 30 秒左右降到了 15 秒以下，10~15 秒之间。使用多线程而得到的性能提升的原因是，系统部署所在的服务器是多核多处理器的，使用多线程，给每个任务分配一个线程执行，可以充分地利用 CPU 计算资源。<br />
+笔者试着给每个任务分配两个线程执行，希望能使程序运行得更快，但是事与愿违，此时程序运行的时间反而比每个任务分配一个线程执行的慢，大约 20 秒。笔者推测，这是因为线程较多（相对于 CPU 的内核数），使得 CPU 忙于线程的上下文切换，过多的线程上下文切换使得程序的性能反而不如之前。因此，要根据实际的硬件环境，给任务分配适量的线程执行。</td></tr></table>
+</div>
+<div id="comment_21344520" class="cm">
+</div>
+    <!--//ITPUB JOB 自定义钩子-->
+        
+    <div id="post_rate_div_21344520"></div>
+</div></div>
+
+</td></tr>
+<tr><td class="plc plm" style="background-color:#F1F1F1">
+<!--//ITPUB 此处去掉DZ自带相关帖子代码-->
+        
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 start-->
+                 
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 end-->
+ 
+        <!--//ITPUB 是否显示签名 -->
+                                	<div style="height:2px;"><span style=" border-bottom:1px solid #000; width:230px; float:left; height:1px;"></span></div>
+                <div class="sign" style="max-height:5760px;maxHeightIE:5760px;"><font size="4"><strong>-----孰能浊以静之徐清&nbsp;&nbsp;孰能安以动之徐生-----&nbsp;&nbsp;<br />
+</strong></font><br />
+ －－－－－－－－－－－－－－－－ <br />
+Karaf+Aries+blueprint 研究中...<br />
+Open Stack 研究中... <br />
+OpenDayLight/NFV 研究中... <br />
+OPENCL + Spark+ Hadoop 研究中... <br />
+<br />
+<br />
+<a href="http://weibo.com/2208646772?s=6uyXnP" target="_blank"><img src="http://service.t.sina.com.cn/widget/qmd/2208646772/9f7f6304/1.png" onload="thumbImg(this)" alt="" /></a></div>
+                            <!--//ITPUB 是否显示签名-->
+        
+        <!--//ITPUB 看了又看,显示在帖子的一楼,浏览数大于30-->
+        </td>
+</tr>
+<tr>
+<td class="pls" style="background-color:#F1F1F1"></td>
+<td class="plc" style="background-color:#F1F1F1">
+<div class="po">
+<div class="pob cl">
+                
+                <p>
+<a href="javascript:;" id="mgc_post_21344520" onmouseover="showMenu(this.id)" class="showmenu">使用道具</a>
+<a href="javascript:;" onclick="showWindow('miscreport21344520', 'misc.php?mod=report&rtype=post&rid=21344520&tid=1783925&fid=76', 'get', -1);return false;">举报</a>
+</p>
+                
+<em>
+                
+                    
+                                        
+                    <!--//EDIT ITPUB_BOCAI 注释掉推送按钮-->
+                    
+</em>
+
+<ul id="mgc_post_21344520_menu" class="p_pop mgcmn" style="display: none;">
+<li><a href="home.php?mod=magic&amp;mid=namepost&amp;idtype=pid&amp;id=21344520:1783925" id="a_namepost_21344520" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/namepost.small.gif" />显身卡</a><li>
+</ul>
+<script type="text/javascript" reload="1">checkmgcmn('post_21344520')</script>
+</div>
+</div>
+        
+        <!--//ITPUB 增加CU文字链 start by caojingfei at 2012.03.21-->
+                <!--//ITPUB 增加CU文字链 end by caojingfei at 2012.03.21-->
+
+</td>
+</tr>
+<tr class="ad">
+<td class="pls" style=" background-color:#FFFFFF;height:3px;"></td>
+<td class="plc" style=" background-color:#FFFFFF;height:3px">
+</td>
+</tr>
+</table>
+</div><div id="post_21344519" style="background-color:#F1F1F1; padding-bottom:0px">
+<table id="pid21344519" summary="pid21344519" cellspacing="0" cellpadding="0">
+<tr>
+<td class="pls" rowspan="2" style=" background-color:#DFDFDF">
+ <div class="pi">
+<div class="authi"><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xw1">Sky-Tiger</a>
+
+ </div>
+
+</div>
+<div class="p_pop blk bui" id="userinfo21344519" style="display: none; margin-top: -11px;">
+<div class="m z">
+<div id="userinfo21344519_ma"></div>
+</div>
+<div class="i y">
+<div>
+<strong><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xi2">Sky-Tiger</a></strong>
+<em>当前离线</em>
+</div>
+<dl class="cl"><dt>UID</dt><dd>71047</dd><dt>帖子</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=reply&view=me&from=space" target="_blank" class="xi2">206098</a></dd><dt>阅读权限</dt><dd>100</dd><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>技术排名</dt><dd>1 </dd><dt>专家积分</dt><dd>795 </dd><dt>社区排名</dt><dd>4 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>
+<div class="imicn">
+<a href="home.php?mod=space&amp;uid=71047&amp;do=profile" target="_blank" title="查看详细资料"><img src="http://itpub.img168.net/static/image/common/userinfo.gif" alt="查看详细资料" /></a>
+<a href="home.php?mod=magic&amp;mid=showip&amp;idtype=user&amp;id=Sky-Tiger" id="a_showip_li_21344519" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/showip.small.gif" alt="" /> IP卡</a>
+<a href="home.php?mod=magic&amp;mid=checkonline&amp;idtype=user&amp;id=Sky-Tiger" id="a_repent_21344519" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/checkonline.small.gif" alt="" /> 狗仔卡</a>
+</div>
+<div id="avatarfeed"><span id="threadsortswait"></span></div>
+</div>
+</div>
+<div>
+            
+            <!--//ITPUB 是否屏蔽用户头像 -->
+                                                <div class="avatar" onmouseover="showauthor(this, 'userinfo21344519')"><a href="home.php?mod=space&amp;uid=71047" target="_blank"><img src="http://passport.ixpub.net/data/avatar/000/07/10/47_avatar_middle.jpg"   onerror="this.onerror=null;this.src='static/image/common/noavatar_middle.gif'" /></a></div>
+                                        <!--//ITPUB 是否屏蔽用户头像-->
+            
+<p><em><a href="home.php?mod=spacecp&amp;ac=usergroup&amp;gid=34" target="_blank">版主</a></em></p>
+<p class="xg1">天王盖地虎</p></div>
+<p></p>
+<dl class="pil cl"><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>专家积分</dt><dd>795 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>            <dl class="pil cl"><dt>论坛徽章:</dt><dd>227</dd></dl><div style="padding:3px; margin-left:5px; margin-right:5px;"><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/></div>            
+<ul class="xl xl2 o cl">
+<!--<li class="callon"><a href="home.php?mod=space&amp;uid=71047" target="_blank" title="串个门" class="xi2">串个门</a></li>-->
+<li class="buddy"><a href="home.php?mod=spacecp&amp;ac=friend&amp;op=add&amp;uid=71047&amp;handlekey=addfriendhk_71047" id="a_friend_li_21344519" onclick="showWindow(this.id, this.href, 'get', 1, {'ctrlid':this.id,'pos':'00'});" title="加好友" class="xi2">加好友</a></li>
+<!--<li class="poke2"><a href="home.php?mod=spacecp&amp;ac=poke&amp;op=send&amp;uid=71047" id="a_poke_li_21344519" onclick="showWindow(this.id, this.href, 'get', 0);" title="打招呼" class="xi2">打招呼</a></li>-->
+<li class="pm2"><a href="home.php?mod=spacecp&amp;ac=pm&amp;op=showmsg&amp;handlekey=showmsg_71047&amp;touid=71047&amp;pmid=0&amp;daterange=2&amp;pid=21344519&amp;tid=1783925" onclick="showWindow('sendpm', this.href);" title="发消息" class="xi2">发消息</a></li>
+</ul>
+</td>
+<td class="plc" style=" background-color:#DFDFDF">
+<div class="pi">
+<strong>
+<a href="forum.php?mod=redirect&goto=findpost&ptid=1783925&pid=21344519" id="postnum21344519" onclick="setCopy(this.href, '帖子地址复制成功');return false;"><em>3</em><sup>#</sup></a>
+</strong>
+<div class="pti">
+<div class="pdbt">
+</div>
+<div class="authi">
+<img class="authicn vm" id="authicon21344519" src="static/image/common/online_moderator.gif" />
+<em id="authorposton21344519">发表于 2013-4-26 20:45:58</em>
+<span class="pipe">|</span><a href="forum.php?mod=viewthread&amp;tid=1783925&amp;page=1&amp;authorid=71047" rel="nofollow">只看该作者</a>
+              
+                
+</div>
+</div>
+</div><div class="pct"><div class="pcb">
+<div class="t_fsz">
+<table cellspacing="0" cellpadding="0"><tr><td class="t_f" id="postmessage_21344519">
+代码优化过程<br />
+笔者开始分析整个过程有哪些耗时操作，以及如何提升效率，缩短程序执行的时间。通过 REST API 获取信息，因为是使用外部系统提供的 API，所以无法在此处提升效率；取得信息之后解析出有效部分，因为是对特定格式的信息进行解析，所以也无效率提升的空间。所以，效率可以大幅度提升的空间在数据库操作部分以及程序控制部分。下面，分条叙述对耗时操作的改进方法。<br />
+针对日志记录的优化<br />
+关闭日志记录，或者更改日志输出级别。因为从两台服务器的外部系统 D 上获取到的信息是相同的，所以数据库插入操作会抛出异常，异常信息类似于“Attempt to insert duplicate record”，这样的异常信息跟有效信息的条数相等，有上千条。这种情况是能预料到的，所以可以考虑关闭日志记录，或者不关闭日志记录而是更改日志输出级别，只记录严重级别（severe level）的错误信息，并将此类操作的日志级别调整为警告级别（warning level），这样就不会记录以上异常信息了。本项目使用的是 Java 自带的日志记录类，以下配置文件将日志输出级别设置为严重级别。<br />
+<br />
+清单 1. log.properties 设置日志输出级别的片段<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;<br />
+ # default file output is in user ’ s home directory. <br />
+ # levels can be: SEVERE, WARNING, INFO, FINE, FINER, FINEST <br />
+ java.util.logging.ConsoleHandler.level=SEVERE <br />
+ java.util.logging.FileHandler.formatter=java.util.logging.SimpleFormatter <br />
+ java.util.logging.FileHandler.append=true <br />
+<br />
+通过上述的优化之后，性能有了大幅度的提升，从原来的 100 秒左右降到了 50 秒左右。为什么仅仅不记录日志就能有如此大幅度的性能提升呢？查阅资料，发现已经有人做了相关的研究与实验。经常听到 Java 程序比 C/C++ 程序慢的言论，但是运行速度慢的真正原因是什么，估计很多人并不清楚。对于 CPU 密集型的程序（即程序中包含大量计算），Java 程序可以达到 C/C++ 程序同等级别的速度，但是对于 I/O 密集型的程序（即程序中包含大量 I/O 操作），Java 程序的速度就远远慢于 C/C++ 程序了，很大程度上是因为 C/C++ 程序能直接访问底层的存储设备。因此，不记录日志而得到大幅度性能提升的原因是，Java 程序的 I/O 操作较慢，是一个很耗时的操作。<br />
+针对数据库连接的优化<br />
+共享数据库连接。共有 5 次数据库连接操作，每次都需重新建立数据库连接，数据库插入操作完成之后又立即释放了，数据库连接没有被复用。为了做到共享数据库连接，可以通过单例模式（Singleton Pattern）获得一个相同的数据库连接，每次数据库连接操作都共享这个数据库连接。这里没有使用数据库连接池（Database Connection Pool）是因为在程序只有少量的数据库连接操作，只有在大量并发数据库连接的时候才需要连接池。<br />
+<br />
+清单 2. 共享数据库连接的代码片段<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;<br />
+ public class JdbcUtil { <br />
+&nbsp; &nbsp; private static Connection con; <br />
+&nbsp; &nbsp; // 从配置文件读取连接数据库的信息<br />
+&nbsp; &nbsp; private static String driverClassName; <br />
+&nbsp; &nbsp; private static String url; <br />
+&nbsp; &nbsp; private static String username; <br />
+&nbsp; &nbsp; private static String password; <br />
+&nbsp; &nbsp; private static String currentSchema; <br />
+&nbsp; &nbsp; private static Properties properties = new Properties(); <br />
+<br />
+&nbsp; &nbsp; static { <br />
+&nbsp; &nbsp; // driverClassName, url, username, password, currentSchema 等从配置文件读取，代码略去<br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;try { <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;Class.forName(driverClassName); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;} catch (ClassNotFoundException e) { <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;e.printStackTrace(); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;} <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;properties.setProperty(&quot;user&quot;, username); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;properties.setProperty(&quot;password&quot;, password); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;properties.setProperty(&quot;currentSchema&quot;, currentSchema); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;try { <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;con = DriverManager.getConnection(url, properties); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;} catch (SQLException e) { <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;e.printStackTrace(); <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;} <br />
+&nbsp; &nbsp; } <br />
+&nbsp; &nbsp; private JdbcUtil() {} <br />
+ // 获得一个单例的、共享的数据库连接<br />
+ public static Connection getConnection() { <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;return con; <br />
+&nbsp; &nbsp; } <br />
+&nbsp; &nbsp; public static void close() throws SQLException { <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;if (con != null) <br />
+&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;con.close(); <br />
+ } <br />
+ } <br />
+<br />
+通过上述的优化之后，性能有了小幅度的提升，从 50 秒左右降到了 40 秒左右。共享数据库连接而得到的性能提升的原因是，数据库连接是一个耗时耗资源的操作，需要同远程计算机进行网络通信，建立 TCP 连接，还需要维护连接状态表，建立数据缓冲区。如果共享数据库连接，则只需要进行一次数据库连接操作，省去了多次重新建立数据库连接的时间。</td></tr></table>
+</div>
+<div id="comment_21344519" class="cm">
+</div>
+    <!--//ITPUB JOB 自定义钩子-->
+        
+    <div id="post_rate_div_21344519"></div>
+</div></div>
+
+</td></tr>
+<tr><td class="plc plm" style=" background-color:#DFDFDF">
+<!--//ITPUB 此处去掉DZ自带相关帖子代码-->
+        
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 start-->
+                 
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 end-->
+ 
+        <!--//ITPUB 是否显示签名 -->
+                                	<div style="height:2px;"><span style=" border-bottom:1px solid #000; width:230px; float:left; height:1px;"></span></div>
+                <div class="sign" style="max-height:5760px;maxHeightIE:5760px;"><font size="4"><strong>-----孰能浊以静之徐清&nbsp;&nbsp;孰能安以动之徐生-----&nbsp;&nbsp;<br />
+</strong></font><br />
+ －－－－－－－－－－－－－－－－ <br />
+Karaf+Aries+blueprint 研究中...<br />
+Open Stack 研究中... <br />
+OpenDayLight/NFV 研究中... <br />
+OPENCL + Spark+ Hadoop 研究中... <br />
+<br />
+<br />
+<a href="http://weibo.com/2208646772?s=6uyXnP" target="_blank"><img src="http://service.t.sina.com.cn/widget/qmd/2208646772/9f7f6304/1.png" onload="thumbImg(this)" alt="" /></a></div>
+                            <!--//ITPUB 是否显示签名-->
+        
+        <!--//ITPUB 看了又看,显示在帖子的一楼,浏览数大于30-->
+        </td>
+</tr>
+<tr>
+<td class="pls" style=" background-color:#DFDFDF"></td>
+<td class="plc" style=" background-color:#DFDFDF">
+<div class="po">
+<div class="pob cl">
+                
+                <p>
+<a href="javascript:;" id="mgc_post_21344519" onmouseover="showMenu(this.id)" class="showmenu">使用道具</a>
+<a href="javascript:;" onclick="showWindow('miscreport21344519', 'misc.php?mod=report&rtype=post&rid=21344519&tid=1783925&fid=76', 'get', -1);return false;">举报</a>
+</p>
+                
+<em>
+                
+                    
+                                        
+                    <!--//EDIT ITPUB_BOCAI 注释掉推送按钮-->
+                    
+</em>
+
+<ul id="mgc_post_21344519_menu" class="p_pop mgcmn" style="display: none;">
+<li><a href="home.php?mod=magic&amp;mid=namepost&amp;idtype=pid&amp;id=21344519:1783925" id="a_namepost_21344519" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/namepost.small.gif" />显身卡</a><li>
+</ul>
+<script type="text/javascript" reload="1">checkmgcmn('post_21344519')</script>
+</div>
+</div>
+        
+        <!--//ITPUB 增加CU文字链 start by caojingfei at 2012.03.21-->
+                <!--//ITPUB 增加CU文字链 end by caojingfei at 2012.03.21-->
+
+</td>
+</tr>
+<tr class="ad">
+<td class="pls" style=" background-color:#FFFFFF;height:3px;"></td>
+<td class="plc" style=" background-color:#FFFFFF;height:3px">
+</td>
+</tr>
+</table>
+</div><div id="post_21344518" style=" background-color:#DFDFDF;margin-bottom:0px">
+<table id="pid21344518" summary="pid21344518" cellspacing="0" cellpadding="0">
+<tr>
+<td class="pls" rowspan="2" style="background-color:#F1F1F1">
+ <div class="pi">
+<div class="authi"><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xw1">Sky-Tiger</a>
+
+ </div>
+
+</div>
+<div class="p_pop blk bui" id="userinfo21344518" style="display: none; margin-top: -11px;">
+<div class="m z">
+<div id="userinfo21344518_ma"></div>
+</div>
+<div class="i y">
+<div>
+<strong><a href="home.php?mod=space&amp;uid=71047" target="_blank" class="xi2">Sky-Tiger</a></strong>
+<em>当前离线</em>
+</div>
+<dl class="cl"><dt>UID</dt><dd>71047</dd><dt>帖子</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=reply&view=me&from=space" target="_blank" class="xi2">206098</a></dd><dt>阅读权限</dt><dd>100</dd><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>技术排名</dt><dd>1 </dd><dt>专家积分</dt><dd>795 </dd><dt>社区排名</dt><dd>4 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>
+<div class="imicn">
+<a href="home.php?mod=space&amp;uid=71047&amp;do=profile" target="_blank" title="查看详细资料"><img src="http://itpub.img168.net/static/image/common/userinfo.gif" alt="查看详细资料" /></a>
+<a href="home.php?mod=magic&amp;mid=showip&amp;idtype=user&amp;id=Sky-Tiger" id="a_showip_li_21344518" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/showip.small.gif" alt="" /> IP卡</a>
+<a href="home.php?mod=magic&amp;mid=checkonline&amp;idtype=user&amp;id=Sky-Tiger" id="a_repent_21344518" class="xi2" onclick="showWindow(this.id, this.href)"><img src="static//image/magic/checkonline.small.gif" alt="" /> 狗仔卡</a>
+</div>
+<div id="avatarfeed"><span id="threadsortswait"></span></div>
+</div>
+</div>
+<div>
+            
+            <!--//ITPUB 是否屏蔽用户头像 -->
+                                                <div class="avatar" onmouseover="showauthor(this, 'userinfo21344518')"><a href="home.php?mod=space&amp;uid=71047" target="_blank"><img src="http://passport.ixpub.net/data/avatar/000/07/10/47_avatar_middle.jpg"   onerror="this.onerror=null;this.src='static/image/common/noavatar_middle.gif'" /></a></div>
+                                        <!--//ITPUB 是否屏蔽用户头像-->
+            
+<p><em><a href="home.php?mod=spacecp&amp;ac=usergroup&amp;gid=34" target="_blank">版主</a></em></p>
+<p class="xg1">天王盖地虎</p></div>
+<p></p>
+<dl class="pil cl"><dt>精华贴数</dt><dd><a href="home.php?mod=space&uid=71047&do=thread&type=digest&view=me&from=space" target="_blank" class="xi2">50</a></dd><dt>专家积分</dt><dd>795 </dd><dt>技术积分</dt><dd>256629 </dd><dt>社区积分</dt><dd>121020 </dd><dt>注册时间</dt><dd>2004-2-19</dd></dl>            <dl class="pil cl"><dt>论坛徽章:</dt><dd>227</dd></dl><div style="padding:3px; margin-left:5px; margin-right:5px;"><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1308' src='/source/plugin/itpub_medal/medalimgs/itpub13-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17' title='itpub13周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/><img id='1309' src='/source/plugin/itpub_medal/medalimgs/guoqing65-small.gif' width='24px' style='margin:2px;cursor: hand;' alt='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17' title='祖国65周年纪念徽章
+日期:2014-09-29 06:30:17'/></div>            
+<ul class="xl xl2 o cl">
+<!--<li class="callon"><a href="home.php?mod=space&amp;uid=71047" target="_blank" title="串个门" class="xi2">串个门</a></li>-->
+<li class="buddy"><a href="home.php?mod=spacecp&amp;ac=friend&amp;op=add&amp;uid=71047&amp;handlekey=addfriendhk_71047" id="a_friend_li_21344518" onclick="showWindow(this.id, this.href, 'get', 1, {'ctrlid':this.id,'pos':'00'});" title="加好友" class="xi2">加好友</a></li>
+<!--<li class="poke2"><a href="home.php?mod=spacecp&amp;ac=poke&amp;op=send&amp;uid=71047" id="a_poke_li_21344518" onclick="showWindow(this.id, this.href, 'get', 0);" title="打招呼" class="xi2">打招呼</a></li>-->
+<li class="pm2"><a href="home.php?mod=spacecp&amp;ac=pm&amp;op=showmsg&amp;handlekey=showmsg_71047&amp;touid=71047&amp;pmid=0&amp;daterange=2&amp;pid=21344518&amp;tid=1783925" onclick="showWindow('sendpm', this.href);" title="发消息" class="xi2">发消息</a></li>
+</ul>
+</td>
+<td class="plc" style="background-color:#F1F1F1">
+<div class="pi">
+<strong>
+<a href="forum.php?mod=redirect&goto=findpost&ptid=1783925&pid=21344518" id="postnum21344518" onclick="setCopy(this.href, '帖子地址复制成功');return false;"><em>2</em><sup>#</sup></a>
+</strong>
+<div class="pti">
+<div class="pdbt">
+</div>
+<div class="authi">
+<img class="authicn vm" id="authicon21344518" src="static/image/common/online_moderator.gif" />
+<em id="authorposton21344518">发表于 2013-4-26 20:45:48</em>
+<span class="pipe">|</span><a href="forum.php?mod=viewthread&amp;tid=1783925&amp;page=1&amp;authorid=71047" rel="nofollow">只看该作者</a>
+              
+                
+</div>
+</div>
+</div><div class="pct"><div class="pcb">
+<div class="t_fsz">
+<table cellspacing="0" cellpadding="0"><tr><td class="t_f" id="postmessage_21344518">
+<p align="left"><font style="color:rgb(0, 0, 0)"><font face="arial, nsimsun, sans-serif">[size=0.76em]项目介绍</font></font></font></p><p align="left"><font style="color:rgb(0, 0, 0)"><font face="arial, nsimsun, sans-serif">[size=0.76em]本文将介绍笔者经历的一个项目中的一部分，通过这个实例剖析代码优化的过程。下面简要地介绍该系统的相关部分。</font></font></font></p><p align="left"><font style="color:rgb(0, 0, 0)"><font face="arial, nsimsun, sans-serif">[size=0.76em]该系统的开发语言为 Java，部署在共拥有 4 核 CPU 的 Linux 服务器上，相关部分主要有以下操作：通过某外部系统 D 提供的 REST API 获取信息，从中提取出有效的信息，并通过 JDBC 存储到某数据库系统 S 中，供系统其他部分使用，上述操作的执行频率为每天一次，一般在午夜当系统空闲时定时执行。为了实现高可用性（High Availability），外部系统 D 部署在两台服务器上，因此需要分别从这两台服务器上获取信息并将信息插入数据库中，有效信息的条数达到了上千条，数据库插入操作次数则为有效信息条数的两倍。</font></font></font></p><br />
+<strong>图 1. 系统体系结构图</strong><br />
+<img width="350" height="325" file="http://www.ibm.com/developerworks/cn/java/j-lo-codeoptimize/image002.jpg" border="0" alt="" /><font color="#000"> </font><br />
+<p align="left"><font style="color:rgb(0, 0, 0)"><font face="arial, nsimsun, sans-serif">[size=0.76em]为了快速地实现预期效果，在最初的实现中优先考虑了功能的实现，而未考虑系统性能和代码可读性等。系统大致有以下的实现：（1）REST API 获取信息、数据库操作可能抛出的异常信息都被记录到日志文件中，作为调试用；（2）共有 5 次数据库连接操作，包括第一次清空数据库表，针对两个外部系统 D 各有两次数据库插入操作，这 5 个连接都是独立的，用完之后即释放；（3）所有的数据库插入语句都是使用 java.sql.Statement 类生成的；（4）所有的数据库插入语句，都是单条执行的，即生成一条执行一条；（5）整个过程都是在单个线程中执行的，包括数据库表清空操作，数据库插入操作，释放数据库连接；（6）数据库插入操作的 JDBC 代码散布在代码中。虽然这个版本的系统可以正常运行，达到了预期的效果，但是效率很低，从通过 REST API 获取信息，到解析并提取有效信息，再到数据库插入操作，总共耗时 100 秒左右。而预期的时间应该在一分钟以内，这显然是不符合要求的。</font></font></font></p><br />
+</td></tr></table>
+</div>
+<div id="comment_21344518" class="cm">
+</div>
+    <!--//ITPUB JOB 自定义钩子-->
+        
+    <div id="post_rate_div_21344518"></div>
+</div></div>
+
+</td></tr>
+<tr><td class="plc plm" style="background-color:#F1F1F1">
+<!--//ITPUB 此处去掉DZ自带相关帖子代码-->
+        
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 start-->
+                 
+        <!--//ITPUB 一楼增加看了又看,相关帖子,本版精华内容 end-->
+ 
+        <!--//ITPUB 是否显示签名 -->
+                                	<div style="height:2px;"><span style=" border-bottom:1px solid #000; width:230px; float:left; height:1px;"></span></div>
+                <div class="sign" style="max-height:5760px;maxHeightIE:5760px;"><font size="4"><strong>-----孰能浊以静之徐清&nbsp;&nbsp;孰能安以动之徐生-----&nbsp;&nbsp;<br />
+</strong></font><br />
+ －－－－－－－－－－－－－－－－ <br />
+Karaf+Aries+blueprint 研究中...<br />
+Open Stack 研究中... <br />
+OpenDayLight/NFV 研究中... <br />
+OPENCL + Spark+ Hadoop 研究中... <br />
+<br />
+<br />
+<a href="http://weibo.com/2208646772?s=6uyXnP" target="_blank"><img src="http://service.t.sina.com.cn/widget/qmd/2208646772/9f7f6304/1.png" onload="thumbImg(this)" alt="" /></a></div>
+                            <!--//ITPUB 是否显示签名-->
+        
+        <!--//ITPUB 看了又看,显示在帖子的一楼,浏览数大于30-->
+        </td>
+</tr>
+<tr>
+<td class="pls" style="background-color:#F1F1F1"></td>
+<td class="plc" style="background-color:#F1F1F1">
+<div class="po">
+<div class="pob cl">
+                
+                <p>
+<a href="javascript:;" id="mgc_post_21344518" onmouseover="showMenu(this.id)" class="showmenu">使用道具</a>
+<a href="javascript:;" onclick="showWindow('miscreport21344518', 'misc.php?mod=report&rtype=post&rid=21344518&tid=1783925&fid=76', 'get', -1);return false;">举报</a>
+</p>
+                
+<em>
+                
+                    
+                                        
+                    <!--//EDIT ITPUB_BOCAI 注释掉推送按钮-->
+                    
+</em>
+
+<ul id="mgc_post_21344518_menu" class="p_pop mgcmn" style="display: none;">
+<li><a href="home.php?mod=magic&amp;mid=namepost&amp;idtype=pid&amp;id=21344518:1783925" id="a_namepost_21344518" onclick="showWindow(this.id, this.href)"><img src="static/image/magic/namepost.small.gif" />显身卡</a><li>
+</ul>
+<script type="text/javascript" reload="1">checkmgcmn('post_21344518')</script>
+</div>
+</div>
+        
+        <!--//ITPUB 增加CU文字链 start by caojingfei at 2012.03.21-->
+                <!--//ITPUB 增加CU文字链 end by caojingfei at 2012.03.21-->
+
+</td>
+</tr>
+<tr class="ad">
+<td class="pls" style=" background-color:#FFFFFF;height:3px;"></td>
+<td class="plc" style=" background-color:#FFFFFF;height:3px">
+</td>
+</tr>
+</table>
+</div>
+<div id="postlistreply" class="pl"><div id="post_new" class="viewthread_table" style="display: none; padding-bottom:3px;"></div></div>
+</div>
+
+
+<!--//ITPUB 增加文库,空间,博客推荐-->
+<div style="border-collapse: separate !important;color: #000000;empty-cells: show;margin-top:2px;">
+  <table cellspacing="0" cellpadding="0" border="0" bgcolor="#000000" width="100%" >
+    <tbody>
+      <!--<tr>
+        <td height="24px;" bgcolor="#D1D9E2" style="border-bottom:1px solid #000">相关内容推荐 </td>
+      </tr>-->
+      <!--<tr>
+        <td height="24px;" align="left" bgcolor="#DFDFDF" style="border-bottom:1px solid #000"><iframe src="http://blog.itpub.net/recent/recent76.htm" id="gad2" scrolling="no" width=100% height=18 marginwidth=0 marginheight=0 frameborder=0 align=default></iframe></td>
+      </tr> -->
+      
+                   <!--<tr>
+        <td height="24px;" align="left" bgcolor="#DFDFDF" style="border-bottom:1px solid #000">
+      
+        </td>
+      </tr>-->
+            
+    </tbody>
+  </table>
+</div>
+<br/>
+
+<style>
+.box0828{ width:960px; margin:0 auto;}
+.box0828_l{ float:left; width:475px;}
+.box0828_r{ float:right; width:475px;}
+</style>
+		<div class="box0828">
+<div class="box0828_l">
+<img border="0" alt="" src="/static/image/common/weixint.jpg">
+
+</div>
+<div class="box0828_r">
+<script type="text/javascript">
+
+    var cpro_id = "u1684206";
+</script>
+<script src="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script>
+
+</div>
+</div>
+
+<form method="post" autocomplete="off" name="modactions" id="modactions">
+<input type="hidden" name="formhash" value="7f1f6ad0" />
+<input type="hidden" name="optgroup" />
+<input type="hidden" name="operation" />
+<input type="hidden" name="listextra" value="" />
+<input type="hidden" name="page" value="" />
+</form>
+
+
+<div class="pgs mtm mbm cl">
+<span class="pgb y"><a href="forum-76-1.html">返回列表</a></span>
+<a id="newspecialtmp" onmouseover="$('newspecial').id = 'newspecialtmp';this.id = 'newspecial';showMenu({'ctrlid':this.id})" onclick="showWindow('newthread', 'forum.php?mod=post&action=newthread&fid=76')" href="javascript:;" title ="发新帖"><img src="http://itpub.img168.net/static/image/common/pn_post.png" alt="发新帖" /></a>
+</div>
+
+<!--[diy=diyfastposttop]--><div id="diyfastposttop" class="area"></div><!--[/diy]-->
+<script type="text/javascript">
+var postminchars = parseInt('5');
+var postmaxchars = parseInt('50000');
+var disablepostctrl = parseInt('0');
+</script>
+
+<div id="f_pst" class="pl bm bmw">
+<form method="post" autocomplete="off" id="fastpostform" action="forum.php?mod=post&amp;action=reply&amp;fid=76&amp;tid=1783925&amp;extra=&amp;replysubmit=yes">
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td class="pls">
+</td>
+<td class="plc">
+
+<span id="fastpostreturn"></span>
+
+
+<div class="cl">
+<div id="fastsmiliesdiv" class="y"><div id="fastsmiliesdiv_data"><div id="fastsmilies"></div></div></div><div class="hasfsl" id="fastposteditor">
+<div class="tedt mtn">
+<div class="bar">
+<span class="y">
+<a href="forum.php?mod=post&amp;action=reply&amp;fid=76&amp;tid=1783925" onclick="return switchAdvanceMode(this.href)">高级模式</a>
+</span><script src="data/cache/seditor.js?o2L" type="text/javascript"></script>
+<div class="fpd">
+    
+<a href="javascript:;" title="文字加粗" class="fbld">B</a>
+<a href="javascript:;" title="设置文字颜色" class="fclr" id="fastpostforecolor">Color</a>
+<a id="fastpostimg" href="javascript:;" title="图片" class="fmg">Image</a>
+<a id="fastposturl" href="javascript:;" title="添加链接" class="flnk">Link</a>
+<a id="fastpostquote" href="javascript:;" title="引用" class="fqt">Quote</a>
+<a id="fastpostcode" href="javascript:;" title="代码" class="fcd">Code</a>
+<a href="javascript:;" class="fsml" id="fastpostsml">Smilies</a>
+    </div></div>
+<div class="area">
+<div class="pt hm">您需要登录后才可以回帖 <a href="member.php?mod=logging&amp;action=login" onclick="showWindow('login', this.href)" class="xi2">登录</a> | <a href="member.php?mod=register.php" class="xi2">注册</a> 
+<a href="http://www.itpub.net/connect.php?mod=login&op=init&referer=forum.php%3Fmod%3Dviewthread%26tid%3D1783925%26ordertype%3D1&statfrom=login" target="_top" rel="nofollow"><img src="http://itpub.img168.net/static/image/common/qq_login.gif" class="vm" /></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<input type="hidden" name="formhash" value="7f1f6ad0" />
+<input type="hidden" name="subject" value="" />
+<p class="ptm pnpost">
+<button type="button" onclick="showWindow('login', 'member.php?mod=logging&action=login&guestmessage=yes')" name="replysubmit" id="fastpostsubmit" class="pn pnc vm" value="replysubmit" tabindex="5"><strong>发表回复</strong></button>
+</p>
+</td>
+</tr>
+</table>
+</form>
+</div>
+
+<script type="text/javascript">
+var connect_qzone_share_url = 'http://www.itpub.net/home.php?mod=spacecp&ac=plugin&id=qqconnect:spacecp&pluginop=share&sh_type=1&thread_id=1783925';
+var connect_weibo_share_url = 'http://www.itpub.net/home.php?mod=spacecp&ac=plugin&id=qqconnect:spacecp&pluginop=share&sh_type=2&thread_id=1783925';
+var connect_thread_info = {
+thread_url: 'http://www.itpub.net/thread-1783925-1-1.html',
+thread_id: '1783925',
+post_id: '21344517',
+forum_id: '76',
+author_id: '71047',
+author: 'Sky-Tiger'
+};
+
+connect_autoshare = '0';
+connect_isbind = '';
+if(connect_autoshare == 1 && connect_isbind) {
+_attachEvent(window, 'load', function(){
+connect_share(connect_weibo_share_url, connect_openid);
+});
+}
+</script>
+
+
+<script type="text/javascript">
+new lazyload();
+</script>
+<script type="text/javascript">document.onkeyup = function(e){keyPageScroll(e, 0, 0, 'forum.php?mod=viewthread&tid=1783925', 1);}</script>
+
+<!--//ITPUB 修改论坛底部广告位位置 at 2011/10/26--></div>
+
+<div class="wp mtn">
+<!--[diy=diy3]--><div id="diy3" class="area"></div><!--[/diy]-->
+</div>
+
+<script type="text/javascript">
+var relatedlink = [];relatedlink[0] = {'sname':'oracle', 'surl':'http://www.itpub.net/tree/index_1/'};
+relatedlink[1] = {'sname':'ORACLE', 'surl':'http://www.itpub.net/tree/index_1/'};
+relatedlink[2] = {'sname':'Oracle', 'surl':'http://www.itpub.net/tree/index_1/'};
+relatedlink[3] = {'sname':'索引树', 'surl':'http://www.itpub.net/pubtree/index.htm'};
+relatedlink[4] = {'sname':'DB2', 'surl':'http://www.itpub.net/tree/index_51/'};
+relatedlink[5] = {'sname':'db2', 'surl':'http://www.itpub.net/tree/index_51/'};
+relatedlink[6] = {'sname':'SQLSERVER', 'surl':'http://www.itpub.net/tree/index_95/'};
+relatedlink[7] = {'sname':'MSSQL', 'surl':'http://www.itpub.net/tree/index_95/'};
+relatedlink[8] = {'sname':'SQL server', 'surl':'http://www.itpub.net/tree/index_95/'};
+relatedlink[9] = {'sname':'SQL Server', 'surl':'http://www.itpub.net/tree/index_95/'};
+relatedlink[10] = {'sname':'sqlserver', 'surl':'http://www.itpub.net/tree/index_95/'};
+relatedlink[11] = {'sname':'Mysql', 'surl':'http://www.itpub.net/tree/index_166/'};
+relatedlink[12] = {'sname':'mysql', 'surl':'http://www.itpub.net/tree/index_166/'};
+relatedlink[13] = {'sname':'MYSQL', 'surl':'http://www.itpub.net/tree/index_166/'};
+relatedlink[14] = {'sname':'Sybase', 'surl':'http://www.itpub.net/tree/index_343/'};
+relatedlink[15] = {'sname':'SYBASE', 'surl':'http://www.itpub.net/tree/index_343/'};
+relatedlink[16] = {'sname':'sybase', 'surl':'http://www.itpub.net/tree/index_343/'};
+relatedlink[17] = {'sname':'BI', 'surl':'http://www.itpub.net/tree/index_339/'};
+relatedlink[18] = {'sname':'bi', 'surl':'http://www.itpub.net/tree/index_339/'};
+relatedlink[19] = {'sname':'数据仓库', 'surl':'http://www.itpub.net/tree/index_339/'};
+relatedlink[20] = {'sname':'数据挖掘', 'surl':'http://www.itpub.net/tree/index_339/'};
+relatedlink[21] = {'sname':'项目管理', 'surl':'http://www.itpub.net/tree/index_137/'};
+relatedlink[22] = {'sname':'pmp', 'surl':'http://www.itpub.net/tree/index_137/'};
+relatedlink[23] = {'sname':'PMP', 'surl':'http://www.itpub.net/tree/index_137/'};
+relatedlink[24] = {'sname':'Java', 'surl':'http://www.itpub.net/tree/index_207/'};
+relatedlink[25] = {'sname':'java', 'surl':'http://www.itpub.net/tree/index_207/'};
+relatedlink[26] = {'sname':'物化视图', 'surl':'http://www.itpub.net/thread-1308625-1-1.html'};
+relatedlink[27] = {'sname':'hanganalyze', 'surl':'http://www.itpub.net/thread-1575393-1-1.html'};
+relatedlink[28] = {'sname':'mongodb', 'surl':'http://www.itpub.net/thread-1575399-1-1.html'};
+relatedlink[29] = {'sname':'MongoDB', 'surl':'http://www.itpub.net/thread-1575399-1-1.html'};
+relatedlink[30] = {'sname':'PDM', 'surl':'http://www.itpub.net/thread-588657-1-1.html'};
+relatedlink[31] = {'sname':'Ruby', 'surl':'http://www.itpub.net/thread-1318349-1-1.html'};
+relatedlink[32] = {'sname':'Python', 'surl':'http://www.itpub.net/thread-1319231-1-1.html'};
+relatedlink[33] = {'sname':'IFS', 'surl':'http://www.itpub.net/thread-1468257-1-1.html'};
+relatedlink[34] = {'sname':'DATAGUARD', 'surl':'http://www.itpub.net/thread-1349792-1-1.html'};
+relatedlink[35] = {'sname':'dataguard', 'surl':'http://www.itpub.net/thread-1349792-1-1.html'};
+relatedlink[36] = {'sname':'bbed', 'surl':'http://www.itpub.net/thread-1475582-1-1.html'};
+relatedlink[37] = {'sname':'sybase', 'surl':'http://www.itpub.net/thread-1430388-1-1.html'};
+relatedlink[38] = {'sname':'ASE', 'surl':'http://www.itpub.net/thread-385520-1-1.html'};
+relatedlink[39] = {'sname':'11g', 'surl':'http://www.itpub.net/thread-1318149-1-1.html'};
+relatedlink[40] = {'sname':'11G', 'surl':'http://www.itpub.net/thread-1318149-1-1.html'};
+relatedlink[41] = {'sname':'ASM', 'surl':'http://www.itpub.net/thread-1342473-1-1.html'};
+relatedlink[42] = {'sname':'asm', 'surl':'http://www.itpub.net/thread-1342473-1-1.html'};
+relatedlink[43] = {'sname':'mysql', 'surl':'http://www.itpub.net/thread-1431442-1-1.html'};
+relatedlink[44] = {'sname':'MYSQL', 'surl':'http://www.itpub.net/thread-1431442-1-1.html'};
+relatedlink[45] = {'sname':'全文索引', 'surl':'http://www.itpub.net/thread-1314534-1-1.html'};
+relatedlink[46] = {'sname':'软件测试', 'surl':'http://www.itpub.net/thread-1318404-1-1.html'};
+relatedlinks('postmessage_21344517');
+</script>
+<script src="http://search.discuz.qq.com/api/site/se?referer=http%3A%2F%2Fwww.baidu.com%2Fs%3Fie%3DUTF-8%26wd%3Djava%2520cpu%25E5%25AF%2586%25E9%259B%2586%25E5%259E%258B%25E6%25B5%258B%25E8%25AF%2595%25E4%25BB%25A3%25E7%25A0%2581&response_type=js&s_id=7333512&s_site_gid=7&s_site_uid=0&ts=1412845911&sig=f89132d796c7e7186128fc375382d66f" type="text/javascript"></script>
+
+<!-- Baidu Button BEGIN -->
+            
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=442796" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">
+document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?t=" + new Date().getHours();
+</script>
+<!-- Baidu Button END -->
+
+<!--//ITPUB 记录用户看贴日志 start--><!--<script src="/sh/viewlog/viewlog_js.php?tid=1783925&fid=76&subject=Java+%B4%FA%C2%EB%D3%C5%BB%AF%B9%FD%B3%CC%B5%C4%CA%B5%C0%FD%BD%E9%C9%DC" type="text/javascript"></script>-->
+<!--//ITPUB 记录用户看贴日志 END-->
+
+<!--//ITPUB 记录版主登录轨迹日志 start-->
+<!--<script src="/sh/moderator_loginlog/moderator_loginlog_js.php" type="text/javascript"></script>-->
+<!--//ITPUB 记录版主登录轨迹日志 END-->	<div style="clear:both"></div></div>
+    
+    <!--//ITPUB 移走论坛底部广告位位置 at 2011/10/26-->     	
+    <div class="xu_bg1108" ><span><a href="javascript:;"  onclick="window.scrollTo('0','0');">TOP</a></span><a href="techmatch.php" target="_blank">技术积分榜</a> <a href="forummatch.php" target="_blank">社区积分榜</a> <a href="plugin.php?id=itpub_medal:medal_list">徽章</a> <a href="http://epub.itpub.net/" target="_blank">电子杂志</a> <a href="misc.php?mod=stat&amp;op=team">团队</a> <a href="misc.php?mod=stat">统计</a> <a href="http://email.itpub.net/">邮箱</a> <a href="http://f.dataguru.cn" target="_blank">虎吧</a> <a href="http://weblog.itpub.net/" target="_blank">老博客</a> <a href="http://www.itpub.net/tree/index.htm" target="_blank">知识索引树</a> <a href="http://book.itpub.net/index.html" target="_blank">读书频道</a> <a href="http://www.itpub.net/plugin.php?id=auction" target="_blank">积分竞拍</a> <a href="http://www.itpub.net/archiver/">文本模式</a> <a href="misc.php?mod=faq">帮助</a></div>  
+    <!--//ITPUB 增加底部导航 start-->
+    <div class="xu_bg1108" ><span>&nbsp;</span> <a href="http://www.itpub.net/" target="_blank">ITPUB首页</a> | <a href="http://www.itpub.net/forum.php" target="_blank">ITPUB论坛</a> | <a href="http://www.itpub.net/forum.php?gid=1" target="_blank">数据库技术</a> | <a href="http://www.itpub.net/forum.php?gid=71" target="_blank">企业信息化</a> | <a href="http://www.itpub.net/forum.php?gid=33" target="_blank">开发技术</a> | <a href="http://www.itpub.net/forum.php?gid=170" target="_blank">微软技术</a> | <a href="http://www.itpub.net/forum.php?gid=121" target="_blank">软件工程与项目管理</a> | <a href="http://www.itpub.net/forum.php?gid=140" target="_blank">IBM技术园地</a> | <a href="http://www.itpub.net/forum.php?gid=50" target="_blank">行业纵向讨论</a> | <a href="http://www.itpub.net/forum-11-1.html" target="_blank">IT招聘</a> | <a href="http://www.itpub.net/forum-61-1.html" target="_blank">IT文档</a> | <a href="http://space.itpub.net/" target="_blank">IT博客</a>
+</div>
+
+<div class="xu_bg1108" ><span>&nbsp;</span> 
+    <a href="http://www.chinaunix.net/" target="_blank">ChinaUnix</a> | <a href="http://blog.chinaunix.net/" target="_blank">ChinaUnix博客</a> | <a href="http://bbs.chinaunix.net/" target="_blank">ChinaUnix论坛</a> | <a href="http://www.ixpub.net/" target="_blank">IXPUB</a> | <a href="http://www.bestsapchina.com/" target="_blank">SAP ERP系统</a>
+</div> 
+
+<div id="ft" class="wp cl">
+        <span style="font-size: 11px"> CopyRight 1999-2011 itpub.net All Right Reserved. 北京皓辰网域网络信息技术有限公司版权所有　<a href="http://www.itpub.net/contactus.php" target="_blank">联系我们</a>　<a href="http://www.itpub.net/footer_wzls.php" target="_blank">网站律师</a>　<a href="http://www.itpub.net/footer_ys.php" target="_blank">隐私政策</a>　<a href="http://www.itpub.net/footer_zscq.php" target="_blank">知识产权声明</a><br>
+                <a href="http://www.it168.com/images/icp.jpg" target="_blank">京ICP证:060528号</a>　北京市公安局海淀分局网监中心备案编号：1101082001　广播电视节目制作经营许可证：编号（京）字第1149号 </span>  
+        <!--//ITPUB 腾讯分析代码-->
+        &nbsp;&nbsp;<span id="tcss"></span><script type="text/javascript" src="http://tcss.qq.com/ping.js?v=1o2L" charset="utf-8"></script><script type="text/javascript" reload="1">pgvMain({"discuzParams":{"r2":"7333512","ui":0,"rt":"forum","md":"viewthread","fi":"76","ti":"1783925","pn":1},"virtualDomain":"www.itpub.net","extraParams":""});</script>        </script>
+</div>  
+<div id="g_upmine_menu" class="tip tip_3" style="display:none;">
+<div class="tip_c">
+积分 0, 距离下一级还需  积分
+</div>
+<div class="tip_horn"></div>
+</div>
+<script src="home.php?mod=misc&ac=sendmail&rand=1412845911" type="text/javascript"></script>
+<span id="scrolltop" onclick="window.scrollTo('0','0')">回顶部</span>
+<script type="text/javascript">_attachEvent(window, 'scroll', function(){showTopLink();});</script>
+<!--//ITPUB 快速跳转START-->
+<div class="popupmenu_popup" id="fjump_menu" style="display: none">
+    <dl><dt><a href="forum.php?gid=1"> ≡ 数据库技术 ≡</a></dt><dd><ul><li><a href="forum-2-1.html">Oracle数据库管理</a></li><li class="sub"><a href="forum-205-1.html">Oracle高可用</a></li><li><a href="forum-3-1.html">Oracle开发</a></li><li><a href="forum-4-1.html">Oracle入门与认证</a></li><li><a href="forum-67-1.html">Oracle专题深入讨论</a></li><li><a href="forum-70-1.html">Oracle新技术</a></li><li><a href="forum-72-1.html">Oracle电子文档</a></li><li><a href="forum-69-1.html">Oracle Fusion中间件</a></li><li><a href="forum-39-1.html">IBM DB2数据库管理</a></li><li><a href="forum-40-1.html">MS SQL Server</a></li><li><a href="forum-98-1.html">SAP实时数据平台</a></li><li><a href="forum-73-1.html">MySQL及其它开源数据库</a></li><li><a href="forum-237-1.html">国内数据库产品</a></li><li><a href="forum-234-1.html">NoSQL</a></li><li><a href="forum-162-1.html">内存数据库</a></li><li><a href="forum-238-1.html">列式数据库</a></li><li><a href="forum-43-1.html">数据仓库与数据挖掘</a></li><li><a href="forum-148-1.html">移动及嵌入式数据库</a></li><li><a href="forum-239-1.html">Hadoop与分布式数据处理</a></li></ul></dd></dl><dl><dt><a href="forum.php?gid=71">≡ 企业信息化 ≡</a></dt><dd><ul><li><a href="forum-5-1.html">ERP产品与实践</a></li><li><a href="forum-83-1.html">CRM产品与实践</a></li><li><a href="forum-89-1.html">HR产品与实践</a></li><li><a href="forum-228-1.html">PLM/PDM产品与实践</a></li><li><a href="forum-214-1.html">云计算和SaaS产品与实践</a></li><li><a href="forum-116-1.html">物流</a></li><li><a href="forum-65-1.html">供应链</a></li><li><a href="forum-93-1.html">供应链建模与仿真</a></li><li><a href="forum-106-1.html">物流设备与系统工程</a></li><li><a href="forum-137-1.html">企业管理咨询</a></li><li><a href="forum-138-1.html">管理协同与办公自动化</a></li><li><a href="forum-139-1.html">IT服务管理</a></li><li><a href="forum-169-1.html">数据中心建设与设备采购</a></li><li><a href="forum-56-1.html">ERP二次开发</a></li><li><a href="forum-46-1.html">Oracle ERP</a></li><li class="sub"><a href="forum-204-1.html">Oracle EBS R12</a></li><li class="sub"><a href="forum-130-1.html">PeopleSoft与JDE</a></li><li class="sub"><a href="forum-163-1.html">EBS相关文档</a></li><li class="sub"><a href="forum-236-1.html">Oracle EBS DBA</a></li><li><a href="forum-45-1.html">SAP R/3</a></li><li class="sub"><a href="forum-105-1.html">SAP Business One开发与快速实施</a></li><li class="sub"><a href="forum-155-1.html">SAP财务及CRM</a></li><li class="sub"><a href="forum-154-1.html">SAP后勤及HR</a></li><li class="sub"><a href="forum-157-1.html">mySAP ERP</a></li><li class="sub"><a href="forum-156-1.html">系统开发及跨应用设置</a></li><li class="sub"><a href="forum-113-1.html">SAP相关文档</a></li><li><a href="forum-166-1.html">国外其它ERP产品</a></li><li><a href="forum-109-1.html">国内ERP产品</a></li></ul></dd></dl><dl><dt><a href="forum.php?gid=33"> ≡ 开发技术 ≡</a></dt><dd><ul><li><a href="forum-128-1.html">Java入门与认证版</a></li><li><a href="forum-123-1.html">Java web开发及框架技术</a></li><li><a href="forum-32-1.html">Java企业开发</a></li><li><a href="forum-76-1.html">WEB程序开发</a></li><li><a href="forum-118-1.html">WEB 2.0技术</a></li><li><a href="forum-119-1.html">动态语言</a></li><li><a href="forum-91-1.html">移动与游戏开发</a></li></ul></dd></dl><dl><dt><a href="forum.php?gid=170">≡ 微软技术 ≡</a></dt><dd><ul><li><a href="forum-176-1.html">微软产品用户交流区</a></li><li class="sub"><a href="forum-201-1.html">.Net人才交流</a></li><li class="sub"><a href="forum-200-1.html">.Net电子书籍&&书籍介绍</a></li><li><a href="forum-171-1.html">开发工具和语言</a></li><li class="sub"><a href="forum-177-1.html">.NET Framework 相关</a></li><li class="sub"><a href="forum-181-1.html">Visual Basic/VB.net</a></li><li class="sub"><a href="forum-179-1.html">Visual C#</a></li><li class="sub"><a href="forum-180-1.html">Visual C++/vc.net</a></li><li class="sub"><a href="forum-183-1.html">Visual Studio</a></li><li class="sub"><a href="forum-108-1.html">.NET软件架构与模式</a></li><li class="sub"><a href="forum-187-1.html">.NET开发辅助工具及框架</a></li><li><a href="forum-172-1.html">Web开发</a></li><li class="sub"><a href="forum-135-1.html">ASP.NET与AJAX</a></li><li class="sub"><a href="forum-190-1.html">Web相关技术讨论(IIS等)</a></li><li class="sub"><a href="forum-189-1.html">Silverlight 技术</a></li><li><a href="forum-174-1.html">微软企业级产品技术</a></li><li class="sub"><a href="forum-195-1.html">SharePoint</a></li><li class="sub"><a href="forum-202-1.html">windows server</a></li><li class="sub"><a href="forum-197-1.html">Biztalk</a></li><li class="sub"><a href="forum-196-1.html">Exchange Server</a></li><li class="sub"><a href="forum-203-1.html">SQL Server</a></li><li><a href="forum-175-1.html">嵌入式及移动开发</a></li><li class="sub"><a href="forum-199-1.html">Windows 移动设备</a></li><li class="sub"><a href="forum-198-1.html">Windows Embedded 嵌入式技术</a></li><li><a href="forum-173-1.html">Office开发</a></li><li class="sub"><a href="forum-191-1.html">Microsoft office system</a></li><li class="sub"><a href="forum-193-1.html">Office Business Application</a></li></ul></dd></dl><dl><dt><a href="forum.php?gid=121">≡ 软件工程与项目管理 ≡</a></dt><dd><ul><li><a href="forum-16-1.html">系统设计与建模</a></li><li class="sub"><a href="forum-20-1.html">数据建模</a></li><li><a href="forum-44-1.html">项目管理</a></li><li class="sub"><a href="forum-215-1.html">PMP认证</a></li><li class="sub"><a href="forum-216-1.html">项目管理文档资源</a></li><li><a href="forum-117-1.html">项目过程</a></li><li><a href="forum-160-1.html">软件测试</a></li><li><a href="forum-110-1.html">算法讨论与研究</a></li></ul></dd></dl><dl><dt><a href="forum.php?gid=140">≡ IBM软件技术园地 ≡</a></dt><dd><ul><li><a href="forum-143-1.html">IBM信息管理</a></li><li><a href="forum-144-1.html">Lotus</a></li><li class="sub"><a href="forum-232-1.html">Mashup技术</a></li><li><a href="forum-151-1.html">Tivoli</a></li><li><a href="forum-149-1.html">Websphere</a></li><li><a href="forum-150-1.html">Rational</a></li><li class="sub"><a href="forum-224-1.html">Jazz大赛专区</a></li><li><a href="forum-152-1.html">与SOA相关的IBM产品与技术</a></li><li><a href="forum-213-1.html">IBM蓝色之路</a></li><li><a href="forum-141-1.html">IBM软件技术精英协会</a></li><li class="sub"><a href="forum-142-1.html">软件技术精英活动专版</a></li></ul></dd></dl><dl><dt><a href="forum.php?gid=27"> ≡ 操作系统与硬件 ≡</a></dt><dd><ul></ul></dd></dl><dl><dt><a href="forum.php?gid=50"> ≡  行业纵向讨论区 ≡</a></dt><dd><ul><li><a href="forum-112-1.html">IT业界评论与展望</a></li><li><a href="forum-86-1.html">政府与教育事业</a></li><li class="sub"><a href="forum-167-1.html">中国政府信息主管联盟</a></li><li><a href="forum-66-1.html">电信行业</a></li><li><a href="forum-68-1.html">金融行业</a></li><li><a href="forum-85-1.html">医卫行业</a></li><li><a href="forum-87-1.html">制造行业</a></li><li><a href="forum-159-1.html">电力行业</a></li><li><a href="forum-243-1.html">建筑施工与房地产行业</a></li><li><a href="forum-51-1.html">信息安全与审计</a></li></ul></dd></dl><dl><dt><a href="forum.php?gid=7"> ≡ 会员交流 ≡</a></dt><dd><ul><li><a href="forum-146-1.html">IT职业生涯</a></li><li><a href="forum-11-1.html">招聘求职商务信息</a></li><li><a href="forum-10-1.html">软件交流</a></li></ul></dd></dl><dl><dt><a href="forum.php?gid=102">≡ ITPUB产品与服务 ≡</a></dt><dd><ul><li><a href="forum-134-1.html">ITPUB活动专版</a></li><li><a href="forum-84-1.html">BLOG天地</a></li><li><a href="forum-15-1.html">授权用户区</a></li><li><a href="forum-9-1.html">站务管理</a></li></ul></dd></dl></div>
+<!--//ITPUB 快速跳转END-->
+
+<!--//ITPUB 定时刷新页面 start-->
+<!--//ITPUB 定时刷新页面 end -->
+
+<script type="text/javascript">  
+  function myerror(_message,_url,_line){   
+     return true; 
+  }   
+  window.onerror = myerror;  
+</script> 
+
+<script src="popwin_js.php?fid=76" type="text/javascript" type="text/javascript"></script>
+
+<!-- START STAT PV -->
+<script src="http://stat.it168.com/pv.js" type="text/javascript" type="text/javascript"></script>
+<script type="text/javascript">
+
+function sendPV(){ 
+var pvTrack = new PvTrack(); 
+pvTrack.type = 35; // 频道类别ID 
+pvTrack.channel = 23; // 频道ID 
+pvTrack.pageType = 0; 
+pvTrack.track(); 
+} 
+window.setTimeout("sendPV()", 3); 
+</script>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20237423-4']);
+  _gaq.push(['_setDomainName', '.itpub.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<div style="display:none">
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F5016281862f595e78ffa42f085ea0f49' type='text/javascript'%3E%3C/script%3E"));
+</script></div>
+<!-- END STAT PV --><script type="text/javascript"> 
+//var jq = jQuery.noConflict();
+function slideImg(selector) {
+var oElem = jq(selector);
+var oUl = oElem.find('ul');
+var aLi = oElem.find('li');
+var iLiLength = aLi.size();
+var iHeight = aLi.innerHeight();
+var iNow = 0;
+var iNow1 = 0;
+var timer = null;
+oUl.css('height', iHeight * iLiLength + 'px');
+
+function autoPlay() {
+if (iNow == iLiLength - 1) {
+iNow = 0;
+aLi.eq(0).css({
+'position': 'relative',
+'top': iHeight * iLiLength + 'px'
+})
+} else {
+iNow++;
+}
+iNow1++;
+oUl.animate({
+top: -iNow1 * iHeight
+}, 800, function() {
+if (iNow == 0) {
+iNow1 = 0;
+aLi.eq(0).css('position', 'static');
+oUl.css('top', '0px');
+}
+})
+};
+
+timer = setInterval(autoPlay, 4000);
+
+oElem.mouseover(function() {
+clearInterval(timer);
+});
+oElem.mouseout(function() {
+timer = setInterval(autoPlay, 4000);
+});
+};
+slideImg('.slide-img');
+</script>
+
+
+
+
+</body>
+</html>
