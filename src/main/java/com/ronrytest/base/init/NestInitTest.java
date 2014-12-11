@@ -7,6 +7,7 @@ public class NestInitTest {
 
     public NestInitTest(String name){
         System.out.println("init NestInitTest ...");
+        System.out.println("111");
         this.nest = new NestClass(this);
         this.name = name;
     }

@@ -19,6 +19,12 @@
 		<slf4j.version>1.7.5</slf4j.version>
 	</properties>
 	<dependencies>
+	    <!-- 管理系统中的远程调用：超时和融断 https://github.com/Netflix/Hystrix -->
+		<dependency>
+			<groupId>com.netflix.hystrix</groupId>
+			<artifactId>hystrix-core</artifactId>
+			<version>1.4.0-RC5</version>
+		</dependency>
 		<dependency>
 			<groupId>com.sun.jdmk</groupId>
 			<artifactId>jmxtools</artifactId>
