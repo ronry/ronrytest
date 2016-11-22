@@ -41,7 +41,8 @@ public class SupplementaryCharacter {
 	 */
 	public static void main(String[] args) throws UnsupportedEncodingException {
 
-		char chinese = '中';
+		//char chinese = '中';
+        char chinese = 'x';
 		// 因为char是无符号数，所以Integer.toBinaryString(chinese)这样输出的就已经是其在内存中的二进制表示(char转int，高位补的是0)
 		System.out.println(Integer.toBinaryString(chinese));
 		System.out.println(Integer.toHexString(chinese));

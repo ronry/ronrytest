@@ -1,19 +1,12 @@
 package com.ronrytest.servletcontainer.plex;
 
+import javax.servlet.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.DispatcherType;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 
 public class RequestFacade implements ServletRequest {
 
@@ -52,7 +45,12 @@ public class RequestFacade implements ServletRequest {
 		return request.getContentLength();
 	}
 
-	public String getContentType() {
+    @Override
+    public long getContentLengthLong() {
+        return 0;
+    }
+
+    public String getContentType() {
 		return request.getContentType();
 	}
 

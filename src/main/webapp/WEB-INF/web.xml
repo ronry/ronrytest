@@ -8,54 +8,54 @@
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
-	<filter>
-		<filter-name>sessionFilter</filter-name>
-		<filter-class>com.taobao.session.TaobaoSessionFilter</filter-class>
-		<init-param>
+	<!--<filter>-->
+		<!--<filter-name>sessionFilter</filter-name>-->
+		<!--<filter-class>com.taobao.session.TaobaoSessionFilter</filter-class>-->
+		<!--<init-param>-->
 
-		<!--日常=daily_new,性能=pref_new,预发和线上=online_new -->
-		<param-name>tbsessionConfigGroup</param-name>
-			<param-value>daily_new</param-value>
-		</init-param>
+		<!--&lt;!&ndash;日常=daily_new,性能=pref_new,预发和线上=online_new &ndash;&gt;-->
+		<!--<param-name>tbsessionConfigGroup</param-name>-->
+			<!--<param-value>daily_new</param-value>-->
+		<!--</init-param>-->
 
-		<!--开启签名校验 
-		<init-param>
-			<param-name>isloginSessionCheck</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		-->
-		
-		<init-param>
-			<param-name>tairTimeout</param-name>
-			<param-value>200</param-value>
-		</init-param>
+		<!--&lt;!&ndash;开启签名校验 -->
+		<!--<init-param>-->
+			<!--<param-name>isloginSessionCheck</param-name>-->
+			<!--<param-value>true</param-value>-->
+		<!--</init-param>-->
+		<!--&ndash;&gt;-->
+		<!---->
+		<!--<init-param>-->
+			<!--<param-name>tairTimeout</param-name>-->
+			<!--<param-value>200</param-value>-->
+		<!--</init-param>-->
 
-		<!--非taobao域应用同步session需要配置如下选项,包括tbpassSwitch,tbpassDomain,filterPage -->
-		<init-param>
-			<param-name>tbpassSwitch</param-name>
-			<param-value>on</param-value>
-		</init-param>
-		<init-param>
+		<!--&lt;!&ndash;非taobao域应用同步session需要配置如下选项,包括tbpassSwitch,tbpassDomain,filterPage &ndash;&gt;-->
+		<!--<init-param>-->
+			<!--<param-name>tbpassSwitch</param-name>-->
+			<!--<param-value>on</param-value>-->
+		<!--</init-param>-->
+		<!--<init-param>-->
 
-			<!--如果是tmall域，日常=.daily.tmall.net,预发和线上=.tmall.com -->
-			<param-name>tbpassDomain</param-name>
-			<param-value>.tbsessiondemo.com</param-value>
-		</init-param>
+			<!--&lt;!&ndash;如果是tmall域，日常=.daily.tmall.net,预发和线上=.tmall.com &ndash;&gt;-->
+			<!--<param-name>tbpassDomain</param-name>-->
+			<!--<param-value>.tbsessiondemo.com</param-value>-->
+		<!--</init-param>-->
 
-	</filter>
+	<!--</filter>-->
 
-	<filter-mapping>
-		<filter-name>sessionFilter</filter-name>
-		<url-pattern>*.tbpass</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>sessionFilter</filter-name>
-		<url-pattern>*.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>sessionFilter</filter-name>
-		<url-pattern>*.jsp</url-pattern>
-	</filter-mapping>
+	<!--<filter-mapping>-->
+		<!--<filter-name>sessionFilter</filter-name>-->
+		<!--<url-pattern>*.tbpass</url-pattern>-->
+	<!--</filter-mapping>-->
+	<!--<filter-mapping>-->
+		<!--<filter-name>sessionFilter</filter-name>-->
+		<!--<url-pattern>*.do</url-pattern>-->
+	<!--</filter-mapping>-->
+	<!--<filter-mapping>-->
+		<!--<filter-name>sessionFilter</filter-name>-->
+		<!--<url-pattern>*.jsp</url-pattern>-->
+	<!--</filter-mapping>-->
 
 	<servlet>
 		<servlet-name>HelloPerformanceServlet</servlet-name>

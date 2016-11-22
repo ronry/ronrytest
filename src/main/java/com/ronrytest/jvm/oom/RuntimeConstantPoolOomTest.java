@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 运行时常亮放在了方法区里,所以通过如下参数设置运行环境
  * run with param: -XX:PermSize=1m -XX:MaxPermSize=1m
  * @author ronry
  *

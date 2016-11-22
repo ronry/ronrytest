@@ -1,15 +1,9 @@
 package com.ronrytest.servletcontainer.plex;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.Locale;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
+import java.io.*;
+import java.util.Locale;
 
 public class Response implements ServletResponse {
 
@@ -93,6 +87,11 @@ public class Response implements ServletResponse {
     }
 
     public void setContentLength(int length) {
+    }
+
+    @Override
+    public void setContentLengthLong(long l) {
+
     }
 
     public void setContentType(String type) {

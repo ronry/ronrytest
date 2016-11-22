@@ -1,11 +1,10 @@
 package com.ronrytest.servletcontainer.plex;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletResponse;
 
 public class ResponseFacade implements ServletResponse {
 
@@ -57,6 +56,11 @@ public class ResponseFacade implements ServletResponse {
 
     public void setContentLength(int length) {
         response.setContentLength(length);
+    }
+
+    @Override
+    public void setContentLengthLong(long l) {
+
     }
 
     public void setContentType(String type) {
